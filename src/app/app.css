@@ -1,0 +1,15 @@
+
+:host {
+  display: block;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+
+h1 {
+  text-align: center;
+  color: navy;
+}
