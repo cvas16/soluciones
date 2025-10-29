@@ -13,6 +13,11 @@ export const PROJECT_ROUTES: Routes = [
     component: ProjectPage
   },
   {
+    path: '',
+    redirectTo: 'dashboard',
+    pathMatch: 'full'
+  },
+  {
 
     path: '**',
     redirectTo: 'dashboard'

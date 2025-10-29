@@ -1,1 +1,27 @@
-<p>dashboard-page works!</p>
+<div>
+  <h2>Mis Proyectos</h2>
+
+  <button class="btn btn-success mb-3" (click)="createNewProject()">+ Crear Nuevo Proyecto</button>
+
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+  <div *ngIf="!isLoading && !errorMessage">
+    <div *ngIf="projects.length > 0; else noProjects">
+      <ul class="list-group">
+        <li *ngFor="let project of projects" class="list-group-item d-flex justify-content-between align-items-center">
+          <a [routerLink]="['/project', project.id]">{{ project.name }}</a>
+          <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+        </li>
+      </ul>
+    </div>
+    <ng-template #noProjects>
+      <p>No tienes proyectos aún. ¡Crea uno!</p>
+    </ng-template>
+  </div>
+</div>

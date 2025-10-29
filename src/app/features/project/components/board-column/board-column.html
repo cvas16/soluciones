@@ -1,0 +1,19 @@
+<div class="board-column card">
+  <div class="card-header">
+    <h5>{{ columnTitle }}</h5>
+  </div>
+  <div class="card-body task-list"
+       cdkDropList
+       [cdkDropListData]="tasks"
+       (cdkDropListDropped)="drop($event)"> <app-task-card
+      *ngFor="let task of tasks"
+      [task]="task"
+      cdkDrag> </app-task-card>
+
+    <div *ngIf="tasks.length === 0" class="text-muted text-center p-3">
+      No hay tareas aquí.
+    </div>
+  </div>
+   <div class="card-footer">
+      <button class="btn btn-sm btn-outline-primary w-100">+ Añadir tarea</button> </div>
+</div>

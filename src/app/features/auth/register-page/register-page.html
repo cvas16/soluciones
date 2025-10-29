@@ -1,1 +1,93 @@
-<p>register-page works!</p>
+<div class="auth-page-wrapper pt-5">
+<div class="auth-one-bg-position auth-one-bg">
+    <div class="bg-overlay"></div>
+    <div class="shape">
+      </div>
+  </div>
+
+  <div class="auth-page-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center mt-sm-5 mb-4 text-white-50">
+            <div>
+              <a routerLink="/" class="d-inline-block auth-logo">
+                <h2 class="text-white">TASKFLOW</h2> </a>
+            </div>
+            <p class="mt-3 fs-15 fw-medium">Tu Gestor de Proyectos y Tareas</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+          <div class="card mt-4">
+            <div class="card-body p-4">
+              <div class="text-center mt-2">
+                <h5 class="text-primary">Crear Nueva Cuenta</h5>
+                <p class="text-muted">Obtén tu cuenta de TaskFlow ahora.</p>
+              </div>
+
+              <div *ngIf="errorMessage" class="alert alert-danger text-center mb-4" role="alert">
+                {{ errorMessage }}
+              </div>
+
+              <div class="p-2 mt-4">
+                <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
+
+                  <div class="mb-3">
+                    <label for="reg-email" class="form-label">Email <span class="text-danger">*</span></label>
+                    <input type="email"
+                           class="form-control"
+                           id="reg-email"
+                           placeholder="Introduce tu email"
+                           formControlName="email"
+                           [ngClass]="{ 'is-invalid': isInvalidField('email') }">
+                    <div *ngIf="isInvalidField('email')" class="invalid-feedback">
+                      {{ getErrorMessage('email') }}
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="reg-username" class="form-label">Usuario <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           id="reg-username"
+                           placeholder="Introduce un nombre de usuario"
+                           formControlName="username"
+                           [ngClass]="{ 'is-invalid': isInvalidField('username') }">
+                    <div *ngIf="isInvalidField('username')" class="invalid-feedback">
+                      {{ getErrorMessage('username') }}
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label" for="reg-password">Contraseña <span class="text-danger">*</span></label>
+                    <div class="position-relative auth-pass-inputgroup"> <input type="password"
+                             class="form-control pe-5 password-input"
+                             placeholder="Introduce tu contraseña"
+                             id="reg-password"
+                             formControlName="password"
+                             [ngClass]="{ 'is-invalid': isInvalidField('password') }">
+                      <div *ngIf="isInvalidField('password')" class="invalid-feedback">
+                        {{ getErrorMessage('password') }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-4">
+                    <button class="btn btn-success w-100" type="submit" [disabled]="registerForm.invalid || isLoading">
+                      <span *ngIf="!isLoading">Registrarse</span>
+                      <span *ngIf="isLoading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      <span *ngIf="isLoading"> Registrando...</span>
+                    </button>
+                  </div>
+                </form>
+                </div></div><div class="mt-4 mb-4 text-center">
+                <p class="mb-0">¿Ya tienes una cuenta? <a routerLink="/auth/login" class="fw-semibold text-decoration-underline"> Inicia Sesión </a> </p>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

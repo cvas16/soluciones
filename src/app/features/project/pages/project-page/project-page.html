@@ -1,1 +1,25 @@
-<p>project-page works!</p>
+<div *ngIf="isLoading" class="text-center">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Cargando proyecto...</span>
+  </div>
+</div>
+
+<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
+<div *ngIf="project && !isLoading && !errorMessage">
+  <h2>Proyecto: {{ project.name }}</h2>
+  <p>{{ project.description || 'Sin descripción.' }}</p>
+
+  <hr>
+
+  <h4>Tablero de Tareas</h4>
+  <div class="board-container d-flex flex-row gap-3"
+       cdkDropListGroup> <app-board-column
+      *ngFor="let column of boardColumns"
+      [columnTitle]="column"
+      [tasks]="getTasksForColumn(column)"
+      (taskDropped)="onTaskDrop($event)"> </app-board-column>
+
+  </div>
+
+</div>

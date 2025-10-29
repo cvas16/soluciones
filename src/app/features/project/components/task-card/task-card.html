@@ -1,0 +1,7 @@
+<div *ngIf="task" class="task-card card mb-2">
+  <div class="card-body">
+    <h6 class="card-title">{{ task.title }}</h6>
+    <p class="card-text">{{ task.description || 'Sin descripción' }}</p>
+    <small class="text-muted">ID: {{ task.id }}</small>
+  </div>
+</div>
