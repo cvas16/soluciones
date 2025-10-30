@@ -1,27 +1,96 @@
-<div>
-  <h2>Mis Proyectos</h2>
+<div class="projects-page">
 
-  <button class="btn btn-success mb-3" (click)="createNewProject()">+ Crear Nuevo Proyecto</button>
-
-  <div *ngIf="isLoading" class="text-center">
-    <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Cargando...</span>
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="page-title">
+          <span class="title-icon">📊</span>
+          Mis Proyectos
+        </h1>
+        <p class="page-subtitle">Gestiona y organiza todos tus proyectos en un solo lugar</p>
+      </div>
+      <button class="btn btn-create" (click)="createNewProject()">
+        <span class="btn-icon">+</span>
+        Crear Proyecto
+      </button>
     </div>
   </div>
 
-  <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-
-  <div *ngIf="!isLoading && !errorMessage">
-    <div *ngIf="projects.length > 0; else noProjects">
-      <ul class="list-group">
-        <li *ngFor="let project of projects" class="list-group-item d-flex justify-content-between align-items-center">
-          <a [routerLink]="['/project', project.id]">{{ project.name }}</a>
-          <button class="btn btn-sm btn-outline-danger">Eliminar</button>
-        </li>
-      </ul>
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Cargando...</span>
     </div>
+    <p class="loading-text">Cargando proyectos...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    <span class="alert-icon">⚠️</span>
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!isLoading && !errorMessage" class="projects-section">
+    <div *ngIf="projects.length > 0; else noProjects">
+
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="section-icon">🕒</span>
+          Proyectos Recientes
+        </h2>
+        <span class="projects-count">{{ projects.length }} proyecto(s)</span>
+      </div>
+
+      <div class="projects-grid">
+        <div *ngFor="let project of projects; let i = index"
+             class="project-card"
+             [style.animation-delay]="(i * 0.1) + 's'">
+
+          <div class="project-content">
+            <h3 class="project-name">
+              <a [routerLink]="['/project', project.id]">{{ project.name }}</a>
+            </h3>
+
+            <div class="project-meta">
+              <span class="project-meta-item">
+                <span class="meta-icon">📋</span>
+                <span class="meta-text">0 tareas</span>
+              </span>
+              <span class="project-meta-item">
+                <span class="meta-icon">👥</span>
+                <span class="meta-text">1 miembro</span>
+              </span>
+            </div>
+
+            <div class="project-footer">
+              <button class="btn btn-view" [routerLink]="['/project', project.id]">
+                <span class="btn-icon">👁️</span>
+                Ver Proyecto
+              </button>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card project-card-create" (click)="createNewProject()">
+          <div class="create-content">
+            <div class="create-icon">+</div>
+            <p class="create-text">Crear nuevo proyecto</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <ng-template #noProjects>
-      <p>No tienes proyectos aún. ¡Crea uno!</p>
+      <div class="empty-state">
+        <div class="empty-state-icon">📂</div>
+        <h3 class="empty-state-title">No tienes proyectos aún</h3>
+        <p class="empty-state-description">
+          Comienza creando tu primer proyecto para organizar tus tareas y colaborar con tu equipo
+        </p>
+        <button class="btn btn-create btn-large" (click)="createNewProject()">
+          <span class="btn-icon">+</span>
+          Crear mi primer proyecto
+        </button>
+      </div>
     </ng-template>
   </div>
 </div>
