@@ -230,13 +230,12 @@ navbar {
   min-height: 100vh;
 }
 
-/* O si prefieres un fondo sólido azulado */
 .blue-background {
   background: #f0f4ff;
   min-height: 100vh;
 }
 
-/* Para el dashboard específicamente */
+/* Para el dashboard  */
 .projects-page {
   background: linear-gradient(135deg, #e8f0ff 0%, #f5efff 100%);
   min-height: 100vh;

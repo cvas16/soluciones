@@ -1,0 +1,15 @@
+.footer-container {
+  padding: 20px 0;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+  color: #6c757d;
+  font-size: 0.9rem;
+
+  margin-top: auto;
+  width: 100%;
+}
+
+.text-sm-end {
+  text-align: right;
+}
+
