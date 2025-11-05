@@ -1,15 +1,24 @@
 .footer-container {
-  padding: 20px 0;
-  background-color: #f8f9fa;
-  border-top: 1px solid #e9ecef;
-  color: #6c757d;
-  font-size: 0.9rem;
-
-  margin-top: auto;
+  position: relative;
+  left: 0;
+  bottom: 0;
   width: 100%;
+  padding: 20px 40px;
+
+  background-color: #111827; /* Color oscuro elegante */
+  color: #f3f4f6;
+  border-top: 2px solid #1f2937;
+  font-size: 0.9rem;
+  box-sizing: border-box;
 }
 
-.text-sm-end {
-  text-align: right;
+.footer-content {
+  display: flex;
+  justify-content: center; /* Centra el texto */
+  align-items: center;
+  gap: 10px; /* Espacio entre los dos textos */
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
 }
-
