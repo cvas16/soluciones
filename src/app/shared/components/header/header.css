@@ -1,0 +1,67 @@
+/* Hace que el header abarque todo el ancho */
+.header {
+  background-color: #222; /* Color oscuro del header */
+  color: white;
+  padding: 15px 0;
+  width: 100%;
+  position: fixed; /* Mantiene el header siempre arriba */
+  top: 0;
+  left: 0;
+  z-index: 1000; /* Asegura que esté encima del contenido */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Contenedor interno para alinear elementos */
+.container {
+  display: flex;
+  justify-content: space-between; /* Logo a la izquierda, botones a la derecha */
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto; /* Centrado horizontal */
+  padding: 0 20px;
+}
+
+/* Logo */
+.logo h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #00b4ff; /* Azul llamativo para TaskFlow */
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Navegación */
+.nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 15px;
+}
+
+/* Enlaces estilo botón */
+.nav a {
+  text-decoration: none;
+  color: white;
+  background-color: #007bff;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.nav a:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Enlace activo */
+.active {
+  background-color: #004080;
+}
+
+/* Espaciado del contenido para no quedar oculto tras el header */
+body, main {
+  margin-top: 80px; /* Evita que el header tape el contenido */
+}
