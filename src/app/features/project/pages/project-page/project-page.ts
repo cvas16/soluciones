@@ -69,11 +69,12 @@ export class ProjectPage implements OnInit, OnDestroy{
         this.project = data.project;
         // Apply project background to the body for a full-page effect
         if (this.project?.background) {
+          // Apply background image/gradient to body and add a class for CSS control
           this.document.body.style.background = this.project.background;
           this.document.body.style.backgroundSize = 'cover';
           this.document.body.style.backgroundPosition = 'center';
           this.document.body.style.backgroundRepeat = 'no-repeat';
-          this.document.body.style.backgroundAttachment = 'fixed';
+          this.document.body.classList.add('has-project-background');
         }
           console.log('Project loaded, background:', this.project?.background);
         this.organizeTasks(data.tasks);
@@ -93,7 +94,7 @@ export class ProjectPage implements OnInit, OnDestroy{
     this.document.body.style.backgroundSize = '';
     this.document.body.style.backgroundPosition = '';
     this.document.body.style.backgroundRepeat = '';
-    this.document.body.style.backgroundAttachment = '';
+    this.document.body.classList.remove('has-project-background');
   }
   private organizeTasks(allTasks: Task[]) {
     this.columns = {

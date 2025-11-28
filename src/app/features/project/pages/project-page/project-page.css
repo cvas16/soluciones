@@ -1,27 +1,30 @@
 :host {
   display: block;
-  /* Altura total menos el tamaño de tu Navbar (aprox 60px-70px) */
-  height: calc(100vh - 70px);
-  overflow: hidden; /* ¡CLAVE! Evita que la página entera tenga scroll */
+  min-height: 100%;
+  width: 100%;
+  color:#F5ECEB;
 }
 
 .project-container {
   display: flex;
   flex-direction: column; /* Organiza Header arriba, Tablero abajo */
-  height: 100%;
-  background-color: #ffffff;
+  min-height: 100vh; /* ensure container spans full viewport as minimum */
+  background-color: transparent; /* allow body background image to show through */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed; /* fix to viewport so it covers all like Trello */
   position: relative; /* for overlay */
 }
 .project-header {
   flex-shrink: 0; /* Evita que el header se aplaste */
   padding: 20px 30px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  background-color: transparent; /* Make header transparent so background shows */
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background-color: transparent;
   position: relative;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  /* header uses transparent background; attachment configured globally */
   z-index: 2; /* above overlay */
 }
 
@@ -30,47 +33,31 @@
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.35); /* Global overlay for entire container */
+  background: rgba(0, 0, 0, 0.15); /* lighter overlay for readability while showing the image */
   z-index: 1;
+  pointer-events: none
 }
-.header-left, .header-right {
+.project-header, .board-wrapper {
   position: relative;
-  z-index: 3; /* Texto above overlay */
+  z-index: 2;
 }
 
-.project-title, .breadcrumbs {
-  color: white !important; /* Forzar texto blanco */
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5); /* Sombra para legibilidad */
-}
-/* 3. Wrapper del Tablero: Este es el que hace SCROLL */
+/* Wrapper del Tablero con Scroll */
 .board-wrapper {
-  flex-grow: 1; /* Ocupa todo el espacio restante hacia abajo */
-  overflow-x: auto; /* Habilita el scroll horizontal AQUÍ */
-  overflow-y: hidden; /* Oculta scroll vertical innecesario */
+  flex-grow: 1;
+  overflow-x: auto; /* Scroll horizontal para las columnas */
+  overflow-y: visible; /* let body scroll manage vertical overflow */
   padding: 20px 30px;
-  background-color: transparent; /* Allow project-container background to show through */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  position: relative; /* required for overlay pseudo-element */
+  /* Scrollbar personalizado sutil */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.5) transparent;
 }
 
-/* removed board-wrapper overlay; overlay handled at project-container level */
-
-.board-wrapper > .board-container,
-.board-wrapper > .board-container * {
-  position: relative;
-  z-index: 1; /* Ensure content sits above overlay */
-}
-
-/* 4. Contenedor de las Columnas: Las alinea en fila */
+/* Contenedor de Columnas */
 .board-container {
-  display: flex; /* Pone las columnas una al lado de la otra */
-  gap: 24px; /* Espacio entre columnas */
-  height: 100%; /* Ocupa toda la altura del wrapper */
-  align-items: flex-start; /* Alinea las columnas arriba */
-
-  /* Asegura que haya un poco de espacio al final del scroll */
+  display: flex;
+  gap: 24px;
+  height: 100%;
+  align-items: flex-start;
   padding-right: 30px;
-  min-width: fit-content; /* Asegura que el contenedor crezca con el contenido */
 }

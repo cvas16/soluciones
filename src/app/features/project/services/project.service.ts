@@ -22,7 +22,7 @@ export class ProjectService {
     return this.http.get<Project[]>(`${this.apiUrl}/projects`);
   }
 
-  createProject(projectData: { name: string; description?: string }): Observable<Project> {
+  createProject(projectData: Partial<Project>): Observable<Project> {
     return this.http.post<Project>(`${this.apiUrl}/projects`, projectData);
   }
 
