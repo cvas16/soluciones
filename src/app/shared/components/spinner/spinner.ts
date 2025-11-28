@@ -1,11 +1,11 @@
 import { Component ,Input} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 @Component({
   selector: 'app-spinner',
   standalone:true,
-  imports: [CommonModule],
+  imports: [CommonModule, NgIf],
   templateUrl: './spinner.html',
-  styleUrl: './spinner.css',
+  styleUrls: ['./spinner.css'],
 })
 export class Spinner {
   @Input() message: string | null = null;

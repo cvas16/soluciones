@@ -1,79 +1,98 @@
+/* src/app/features/project/components/board-column/board-column.css */
 :host {
-  /* Hace que cada columna ocupe un espacio flexible pero con un mínimo */
-  flex: 1 1 300px; /* Crece, se encoge, base de 300px */
-  max-width: 320px; /* Un ancho máximo para que no sean demasiado anchas */
-  min-width: 280px; /* Un ancho mínimo */
-  height: fit-content; /* La altura se ajusta al contenido */
+  display: block;
+  min-width: 280px;
+  max-width: 280px;
+  height: 100%; /* Para que ocupe lo que necesite */
 }
 
 .board-column {
-  background-color: #f1f2f4; /* Un gris muy claro, similar a Trello */
+  background-color: #f4f5f7; /* Gris clásico de Kanban */
   border-radius: 8px;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
-  /* Controla la altura máxima si quieres scroll interno */
-  max-height: calc(100vh - 200px); /* Ejemplo: Altura de la ventana menos el header/navbar/padding */
+  padding: 6px; /* Padding interno para las tarjetas */
 }
 
-.card-header {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #dcdfe4;
-  background-color: transparent; /* Fondo transparente */
+/* HEADER DE LA COLUMNA */
+.column-header {
+  padding: 12px 12px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
-.card-header h5 {
+.header-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+/* Colores para los puntos según la columna (puedes asignar clases dinámicas) */
+.dot-blue { background-color: #0052cc; }
+.dot-orange { background-color: #ff991f; }
+.dot-green { background-color: #36b37e; }
+
+.column-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #42526e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #333;
 }
 
+.task-count {
+  background-color: rgba(9, 30, 66, 0.08);
+  color: #172b4d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* LISTA DE TAREAS */
 .task-list {
-  padding: 0.5rem; /* Espacio alrededor de las tarjetas */
-  overflow-y: auto; /* Scroll vertical si hay muchas tareas */
-  min-height: 80px; /* Altura mínima para que la zona de drop sea usable */
-  flex-grow: 1; /* Ocupa el espacio vertical disponible */
+  flex-grow: 1;
+  overflow-y: auto; /* Scroll solo dentro de la lista si es muy larga */
+  min-height: 50px;
+  padding: 0 4px; /* Espacio lateral */
 }
 
-.card-footer {
-  padding: 0.5rem;
-  border-top: 1px solid #dcdfe4;
+/* BOTÓN "+ AÑADIR" */
+.add-btn-wrapper {
+  padding: 8px;
 }
 
-.card-footer .btn {
-  color: #555;
+.btn-add-task {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #5e6c84;
+  font-size: 0.9rem;
   font-weight: 500;
-}
-
-.card-footer .btn:hover {
-  background-color: #e9ecef;
-  color: #000;
-}
-
-
-.cdk-drop-list-dragging .task-list {
-  background-color: #e2e4e9;
-  border: 1px dashed #aaa;
-}
-
-
-.cdk-drag-placeholder {
-  opacity: 0.3;
-  background-color: #ccc;
-  border: 1px dashed #aaa;
+  text-align: left;
+  padding: 8px;
   border-radius: 4px;
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-/* Animación suave al soltar */
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+.btn-add-task:hover {
+  background-color: rgba(9, 30, 66, 0.08);
+  color: #172b4d;
 }
 
-/* Estilo del elemento mientras se arrastra */
 .cdk-drag-preview {
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
   border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
+.cdk-drag-placeholder { opacity: 0.2; }

@@ -8,9 +8,7 @@ interface LoginResponse {
   token: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class AuthService {
 
   private apiUrl = `${environment.apiUrl}/auth`;
@@ -27,56 +25,28 @@ export class AuthService {
 
   login(credentials: { username: string; password: string }): Observable<LoginResponse> {
 
-    console.warn('--- MODO DE SIMULACIÓN DE LOGIN ACTIVO ---');
-
-
-    //Simula una respuesta exitosa del backend con un token falso
-    return of({ token: 'un-token-falso-para-desarrollo' }).pipe(
-      delay(500), // 3. Simula un pequeño retraso de red
-      tap(response => {
-        // Esta lógica de 'tap' es la MISMA que la real y se ejecutará
-        if (response && response.token) {
-          localStorage.setItem('authToken', response.token);
-          this.loggedIn.next(true); // Actualiza el estado de autenticación
-          console.log('Login simulado exitoso, token falso guardado');
-        }
-      })
-    );
-
-
-    /*
-
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials)
       .pipe(
         tap(response => {
-          if (response && response.token) {
             localStorage.setItem('authToken', response.token);
             this.loggedIn.next(true);
             console.log('Login exitoso, token guardado');
-          } else {
-             throw new Error('No se recibió token del servidor');
-          }
-        }),
+          }),
         catchError(error => {
           console.error('Error en el login:', error);
-          localStorage.removeItem('authToken');
-          this.loggedIn.next(false);
-          return throwError(() => new Error('Credenciales inválidas o error del servidor'));
+          return throwError(() => new Error('Credenciales inválidas'));
         })
       );
-
-    */
   }
 
   logout(): void {
     localStorage.removeItem('authToken');
     this.loggedIn.next(false);
-    console.log('Token eliminado, cerrando sesión');
     this.router.navigateByUrl('/auth/login');
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return this.hasToken();
   }
 
   getToken(): string | null {
@@ -84,20 +54,6 @@ export class AuthService {
   }
 
   register(userData: any): Observable<any> {
-    /*
-    console.warn('--- MODO DE SIMULACIÓN DE REGISTRO ACTIVO ---');
-    return of({ success: true }).pipe(
-      delay(500),
-      tap(() => console.log('Registro simulado exitoso'))
-    );
-    */
-    return this.http.post(`${this.apiUrl}/register`, userData).pipe(
-      tap(() => console.log('Registro exitoso')),
-      catchError(error => {
-        console.error('Error en el registro:', error);
-        return throwError(() => new Error('Error al registrar usuario'));
-      })
-    );
-
+    return this.http.post(`${this.apiUrl}/register`, userData);
   }
 }

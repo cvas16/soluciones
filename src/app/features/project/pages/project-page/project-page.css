@@ -1,9 +1,43 @@
-.board-container {
+/* 1. Contenedor Principal: Ocupa toda la pantalla disponible */
+:host {
+  display: block;
+  /* Altura total menos el tamaño de tu Navbar (aprox 60px-70px) */
+  height: calc(100vh - 70px);
+  overflow: hidden; /* ¡CLAVE! Evita que la página entera tenga scroll */
+}
+
+.project-container {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  overflow-x: auto;
-  padding-bottom: 1rem;
-  min-height: calc(100vh - 200px);
-  align-items: flex-start;
+  flex-direction: column; /* Organiza Header arriba, Tablero abajo */
+  height: 100%;
+  background-color: #ffffff;
+}
+
+/* 2. Header: Se queda fijo y no se encoge */
+.project-header {
+  flex-shrink: 0; /* Evita que el header se aplaste */
+  padding: 20px 30px;
+  border-bottom: 1px solid #ebecf0;
+  background-color: #fff;
+}
+
+/* 3. Wrapper del Tablero: Este es el que hace SCROLL */
+.board-wrapper {
+  flex-grow: 1; /* Ocupa todo el espacio restante hacia abajo */
+  overflow-x: auto; /* Habilita el scroll horizontal AQUÍ */
+  overflow-y: hidden; /* Oculta scroll vertical innecesario */
+  padding: 20px 30px;
+  background-color: #fff; /* O el color de fondo que prefieras */
+}
+
+/* 4. Contenedor de las Columnas: Las alinea en fila */
+.board-container {
+  display: flex; /* Pone las columnas una al lado de la otra */
+  gap: 24px; /* Espacio entre columnas */
+  height: 100%; /* Ocupa toda la altura del wrapper */
+  align-items: flex-start; /* Alinea las columnas arriba */
+
+  /* Asegura que haya un poco de espacio al final del scroll */
+  padding-right: 30px;
+  min-width: fit-content; /* Asegura que el contenedor crezca con el contenido */
 }

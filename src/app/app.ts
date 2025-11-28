@@ -6,9 +6,9 @@ import { Footer } from './shared/components/footer/footer';
 @Component({
   selector: 'app-root',
   standalone:true,
-  imports: [CommonModule,RouterOutlet,Navbar,Footer],
+  imports: [CommonModule, RouterOutlet,Navbar,Footer],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
 export class App {
   protected readonly title = signal('PROYECTO');

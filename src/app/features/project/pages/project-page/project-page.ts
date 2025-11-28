@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
 import { Project } from '../../models/project.model';
@@ -7,12 +7,13 @@ import { Task } from '../../models/task.model';
 import { BoardColumn } from '../../components/board-column/board-column';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TaskDetailModal } from '../../components/task-detail-modal/task-detail-modal';
+
 @Component({
   selector: 'app-project-page',
   standalone:true,
-  imports: [CommonModule,BoardColumn,DragDropModule,TaskDetailModal],
+  imports: [CommonModule, NgIf,BoardColumn,DragDropModule,TaskDetailModal],
   templateUrl: './project-page.html',
-  styleUrl: './project-page.css',
+  styleUrls: ['./project-page.css'],
 })
 export class ProjectPage implements OnInit{
   private route = inject(ActivatedRoute);
@@ -21,14 +22,27 @@ export class ProjectPage implements OnInit{
 
   projectId: string | null = null;
   project: Project | null = null;
-  tasks: Task[] = [];
+  columns: { [key: string]: Task[] } = {
+    'Pendiente': [],
+    'En Análisis': [],
+    'En Desarrollo': [],
+    'En Pruebas': [],
+    'Finalizado': [],
+    'Desestimado': []
+  };
   isLoading = true;
   errorMessage: string | null = null;
   selectedTask: Task | null = null;
   isTaskModalVisible = false;
 
-
-  boardColumns: string[] = ['Pendiente', 'En Progreso', 'Hecho'];
+  boardColumns: string[] = [
+    'Pendiente',
+    'En Análisis',
+    'En Desarrollo',
+    'En Pruebas',
+    'Finalizado',
+    'Desestimado'
+  ];
 
   ngOnInit(): void {
     this.projectId = this.route.snapshot.paramMap.get('id');
@@ -37,8 +51,7 @@ export class ProjectPage implements OnInit{
       console.error('No se encontró ID de proyecto en la ruta');
       this.errorMessage = 'ID de proyecto inválido.';
       this.isLoading = false;
-      // Podrías redirigir al dashboard
-      // this.router.navigateByUrl('/project/dashboard');
+      this.router.navigateByUrl('/project/dashboard');
       return;
     }
 
@@ -48,69 +61,65 @@ export class ProjectPage implements OnInit{
   loadProjectDetails(id: string): void {
     this.isLoading = true;
     this.errorMessage = null;
-    // Llama a un método del servicio para obtener los detalles Y las tareas
     this.projectService.getProjectWithTasks(id).subscribe({
       next: (data) => {
-        // Asumiendo que el servicio devuelve { project: Project, tasks: Task[] }
         this.project = data.project;
-        this.tasks = data.tasks;
+        this.organizeTasks(data.tasks);
         this.isLoading = false;
-        console.log('Detalles del proyecto cargados:', data);
       },
       error: (err) => {
-        console.error('Error cargando detalles del proyecto:', err);
+        console.error(err);
         this.errorMessage = 'No se pudo cargar el proyecto.';
         this.isLoading = false;
       }
     });
   }
+  private organizeTasks(allTasks: Task[]) {
+    this.columns = {
+      'Pendiente': [],
+      'En Análisis': [],
+      'En Desarrollo': [],
+      'En Pruebas': [],
+      'Finalizado': [],
+      'Desestimado': []
+    };
 
-  // Función para obtener las tareas de una columna específica
+    allTasks.forEach(task => {
+      if (task.status === 'En Progreso') task.status = 'En Desarrollo';
+      if (task.status === 'Hecho') task.status = 'Finalizado';
+
+      if (this.columns[task.status]) {
+        this.columns[task.status].push(task);
+      } else {
+        this.columns['Pendiente'].push(task);
+      }
+    });
+  }
+
   getTasksForColumn(columnName: string): Task[] {
-    // Asumiendo que cada tarea tiene una propiedad 'status' o 'board'
-    return this.tasks.filter(task => task.status === columnName); // Ajusta la propiedad
+    return this.columns[columnName] || [];
   }
 
   onTaskDrop(event: CdkDragDrop<Task[]>) {
-    console.log('Drop event en ProjectPage:', event);
-
-    // event.previousContainer.data -> Array de tareas de la columna ORIGEN
-    // event.container.data -> Array de tareas de la columna DESTINO
-    // event.previousIndex -> Índice en la columna origen
-    // event.currentIndex -> Índice en la columna destino
-    // event.item.data -> La tarea que se movió (si la pusiste en [cdkDragData])
-
     if (event.previousContainer === event.container) {
-      // Mover dentro de la misma columna
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-      console.log('Movido dentro de la misma columna');
-      // Aquí podrías llamar a un servicio para guardar el nuevo orden si es necesario
     } else {
-      // Mover a una columna diferente
-      const taskToMove = event.previousContainer.data[event.previousIndex];
-      const newStatus = this.getColumnTitleFromContainerId(event.container.id); // Necesitas una forma de saber el status de la nueva columna
-
+      const task = event.item.data as Task;
+      const newStatus = event.container.id;
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
-      console.log(`Movido a columna: ${newStatus}`);
-
-      taskToMove.status = newStatus;
+      task.status = newStatus;
+      this.projectService.updateTask(task.id, { status: newStatus }).subscribe({
+        next: () => console.log('Estado guardado en BD'),
+        error: (err) => console.error('Error guardando movimiento:', err)
+      });
     }
-
-    this.tasks = [
-      ...this.getTasksForColumn(this.boardColumns[0]),
-      ...this.getTasksForColumn(this.boardColumns[1]),
-      ...this.getTasksForColumn(this.boardColumns[2])
-      ];
   }
 
-  private getColumnTitleFromContainerId(containerId: string): string {
-    return containerId;
-  }
   openTaskDetail(task: Task): void {
     this.selectedTask = task;
     this.isTaskModalVisible = true;
@@ -121,14 +130,32 @@ export class ProjectPage implements OnInit{
     this.selectedTask = null;
   }
   onTaskUpdated(updatedTask: Task): void {
-    const index = this.tasks.findIndex(t => t.id === updatedTask.id);
-    if (index !== -1) {
-      const newTasks = [...this.tasks];
-      newTasks[index] = updatedTask;
-      this.tasks = newTasks;
+    if (this.projectId) {
+      this.loadProjectDetails(this.projectId);
     }
   }
   onTaskDeleted(taskId: string): void {
-    this.tasks = this.tasks.filter(t => t.id !== taskId);
+    if (this.projectId) {
+      this.loadProjectDetails(this.projectId);
+    }
+  }
+  onQuickStatusChange(event: { task: Task, newStatus: string }): void {
+    const { task, newStatus } = event;
+    const oldStatus = task.status;
+    if (this.columns[oldStatus]) {
+      this.columns[oldStatus] = this.columns[oldStatus].filter(t => t.id !== task.id);
+    }
+    task.status = newStatus;
+    if (this.columns[newStatus]) {
+      this.columns[newStatus].push(task);
+    } else {
+       this.columns['Pendiente'].push(task);
+    }
+    this.projectService.updateTask(task.id, { status: newStatus }).subscribe({
+      next: () => console.log(`Tarea marcada como ${newStatus}`),
+      error: (err) => {
+        console.error('Error actualizando estado:', err);
+      }
+    });
   }
 }

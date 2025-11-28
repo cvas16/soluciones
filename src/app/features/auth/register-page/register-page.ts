@@ -1,15 +1,15 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.services';
 
 @Component({
   selector: 'app-register-page',
   standalone:true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, NgIf, ReactiveFormsModule, RouterLink],
   templateUrl: './register-page.html',
-  styleUrl: './register-page.css',
+  styleUrls: ['./register-page.css'],
 })
 export class RegisterPage implements OnInit {
   private fb = inject(FormBuilder);

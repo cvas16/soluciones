@@ -1,7 +1,46 @@
-<div *ngIf="task" class="task-card card mb-2">
-  <div class="card-body">
-    <h6 class="card-title">{{ task.title }}</h6>
-    <p class="card-text">{{ task.description || 'Sin descripción' }}</p>
-    <small class="text-muted">ID: {{ task.id }}</small>
+<div *ngIf="task" class="task-card" [class.completed]="isCompleted()">
+
+  <div class="d-flex gap-2">
+
+    <div class="checkbox-wrapper" (click)="$event.stopPropagation()">
+      <input type="checkbox"
+             class="custom-checkbox"
+             [checked]="isCompleted()"
+             (change)="toggleCompletion()">
+    </div>
+
+    <div class="w-100">
+
+      <div class="card-title" [class.text-decoration-line-through]="isCompleted()">
+        {{ task.title }}
+      </div>
+
+      <div class="card-desc"
+           *ngIf="task.description"
+           [class.text-decoration-line-through]="isCompleted()">
+        {{ task.description }}
+      </div>
+
+      <div class="card-footer-info">
+        <span class="priority-tag"
+              [ngClass]="{
+                'tag-alta': task.priority === 'Alta',
+                'tag-media': task.priority === 'Media' || !task.priority,
+                'tag-baja': task.priority === 'Baja'
+              }">
+          {{ task.priority || 'MEDIA' }}
+        </span>
+
+        <div class="meta-info">
+          <span *ngIf="task.attachments?.length" title="Adjuntos">
+            📎 {{ task.attachments?.length }}
+          </span>
+
+          <div class="user-avatar-xs" [title]="task.assignedUsername || 'Sin asignar'">
+            {{ task.assignedUsername ? task.assignedUsername.charAt(0).toUpperCase() : '?' }}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

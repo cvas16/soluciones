@@ -6,4 +6,9 @@ export interface Task {
   status: string;
   projectId: string;
   assignedUserId?: string;
+  assignedUsername?: string;
+  priority?: string;
+  createdAt?: string;
+  createdByUsername?: string;
+  attachments?: string[];
 }

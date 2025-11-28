@@ -1,33 +1,51 @@
-<div *ngIf="isLoading" class="text-center">
+<div class="project-container" *ngIf="project && !isLoading && !errorMessage">
+
+  <div class="project-header">
+    <div class="header-left">
+      <div class="breadcrumbs">
+        Proyectos <span>/</span> {{ project.name }}
+      </div>
+      <h1 class="project-title">{{ project.name }}</h1>
+      <p class="project-desc" *ngIf="project.description">{{ project.description }}</p>
+    </div>
+
+    <div class="header-right">
+       </div>
+  </div>
+
+  <div class="board-wrapper">
+
+    <div class="board-container" cdkDropListGroup>
+
+      <app-board-column
+        *ngFor="let column of boardColumns"
+        [columnTitle]="column"
+        [tasks]="columns[column]"
+        [projectId]="project.id"
+        (taskDropped)="onTaskDrop($event)"
+        (taskClicked)="openTaskDetail($event)"
+        (taskMoved)="onQuickStatusChange($event)">
+      </app-board-column>
+
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="isLoading" class="text-center mt-5">
   <div class="spinner-border text-primary" role="status">
     <span class="visually-hidden">Cargando proyecto...</span>
   </div>
 </div>
 
-<div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-
-<div *ngIf="project && !isLoading && !errorMessage">
-  <h2>Proyecto: {{ project.name }}</h2>
-  <p>{{ project.description || 'Sin descripción.' }}</p>
-
-  <hr>
-
-  <h4>Tablero de Tareas</h4>
-  <div class="board-container d-flex flex-row gap-3"
-      cdkDropListGroup>
-      <app-board-column
-      *ngFor="let column of boardColumns"
-      [columnTitle]="column"
-      [tasks]="getTasksForColumn(column)"
-      (taskDropped)="onTaskDrop($event)"
-      (taskClicked)="openTaskDetail($event)"> </app-board-column>
-  </div>
-  <app-task-detail-modal
-      [isVisible]="isTaskModalVisible"
-      [task]="selectedTask"
-      (closed)="onTaskModalClose()"
-      (taskUpdated)="onTaskUpdated($event)"
-      (taskDeleted)="onTaskDeleted($event)">
-  </app-task-detail-modal>
-
+<div *ngIf="errorMessage" class="alert alert-danger m-4">
+  {{ errorMessage }}
 </div>
+
+<app-task-detail-modal
+  [isVisible]="isTaskModalVisible"
+  [task]="selectedTask"
+  (closed)="onTaskModalClose()"
+  (taskUpdated)="onTaskUpdated($event)"
+  (taskDeleted)="onTaskDeleted($event)">
+</app-task-detail-modal>

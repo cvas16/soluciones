@@ -7,7 +7,7 @@ import { Spinner } from '../../../../shared/components/spinner/spinner';
   selector: 'app-profile-page',
   imports: [CommonModule,ReactiveFormsModule,Spinner],
   templateUrl: './profile-page.html',
-  styleUrl: './profile-page.css',
+  styleUrls: ['./profile-page.css'],
 })
 export class ProfilePage implements OnInit {
   private fb = inject(FormBuilder);

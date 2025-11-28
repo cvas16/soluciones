@@ -3,27 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, forkJoin, of, delay, tap, catchError, throwError } from 'rxjs';
 import { environment } from '../../../../environments/environment.development';
 import { Project } from '../models/project.model';
-import { Task } from '../models/task.model'; // Asegúrate que la ruta sea correcta
+import { Task } from '../models/task.model';
 
 interface ProjectDetailsResponse {
   project: Project;
   tasks: Task[];
 }
-
-const MOCK_PROJECTS: Project[] = [
-  { id: '1', name: 'Proyecto TaskFlow (Angular)', description: 'Desarrollar el frontend' },
-  { id: '2', name: 'Proyecto TaskFlow (Spring)', description: 'Desarrollar el backend' },
-  { id: '3', name: 'Documentación', description: 'Escribir el README y guías' }
-];
-
-const MOCK_TASKS: Task[] = [
-  { id: 't1', title: 'Crear componente Login', status: 'Hecho', projectId: '1' },
-  { id: 't2', title: 'Crear componente Dashboard', status: 'En Progreso', projectId: '1' },
-  { id: 't3', title: 'Crear componente Tablero', status: 'Pendiente', projectId: '1' },
-  { id: 't4', title: 'Definir modelo User', status: 'Hecho', projectId: '2' },
-  { id: 't5', title: 'Configurar Spring Security', status: 'Pendiente', projectId: '2' },
-];
-
 
 @Injectable({
   providedIn: 'root'
@@ -33,105 +18,44 @@ export class ProjectService {
   private apiUrl = environment.apiUrl;
   private http = inject(HttpClient);
 
-  /** Obtiene todos los proyectos (SIMULADO) */
   getProjects(): Observable<Project[]> {
-    console.warn('--- MODO DE SIMULACIÓN DE GET-PROJECTS ACTIVO ---');
-    // Simula la obtención de proyectos
-    return of([...MOCK_PROJECTS]).pipe(delay(1000)); // Simula 1 segundo de carga
-
-    /*
-    // --- CÓDIGO REAL ---
-    return this.http.get<Project[]>(`${this.apiUrl}/projects`).pipe(
-      catchError(err => {
-        console.error('Error cargando proyectos:', err);
-        return throwError(() => new Error('No se pudieron cargar los proyectos'));
-      })
-    );
-    */
+    return this.http.get<Project[]>(`${this.apiUrl}/projects`);
   }
 
-  /** Obtiene un proyecto por ID (SIMULADO) */
-  getProjectById(id: string): Observable<Project> {
-    const project = MOCK_PROJECTS.find(p => p.id === id);
-    if (!project) {
-      return throwError(() => new Error('Proyecto no encontrado'));
-    }
-    return of(project).pipe(delay(300));
-
-    // --- CÓDIGO REAL ---
-    // return this.http.get<Project>(`${this.apiUrl}/projects/${id}`);
-  }
-
-  /** Obtiene tareas de un proyecto (SIMULADO) */
-  getTasksForProject(projectId: string): Observable<Task[]> {
-    const tasks = MOCK_TASKS.filter(t => t.projectId === projectId);
-    return of(tasks).pipe(delay(300));
-
-    // --- CÓDIGO REAL ---
-    // return this.http.get<Task[]>(`${this.apiUrl}/projects/${projectId}/tasks`);
-  }
-
-  /** Obtiene proyecto y tareas (SIMULADO) */
-  getProjectWithTasks(projectId: string): Observable<ProjectDetailsResponse> {
-    return forkJoin({
-      project: this.getProjectById(projectId), // Llama a los métodos simulados
-      tasks: this.getTasksForProject(projectId)
-    }).pipe(
-       catchError(err => {
-         console.error('Error en forkJoin getProjectWithTasks:', err);
-         return throwError(() => err);
-       })
-    );
-  }
-
-  /** Crea un proyecto (SIMULADO) */
   createProject(projectData: { name: string; description?: string }): Observable<Project> {
-    console.warn('--- MODO DE SIMULACIÓN DE CREATE-PROJECT ACTIVO ---');
-    const newProject: Project = {
-      id: Math.random().toString(36).substring(2, 9), // ID aleatorio
-      name: projectData.name,
-      description: projectData.description
-    };
-    MOCK_PROJECTS.push(newProject);
-    return of(newProject).pipe(delay(500));
-
-    // --- CÓDIGO REAL ---
-    // return this.http.post<Project>(`${this.apiUrl}/projects`, projectData);
+    return this.http.post<Project>(`${this.apiUrl}/projects`, projectData);
   }
 
   deleteProject(projectId: string): Observable<void> {
-    console.warn('--- MODO DE SIMULACIÓN DE DELETE-PROJECT ACTIVO ---');
-
-    const index = MOCK_PROJECTS.findIndex(p => p.id === projectId);
-    if (index > -1) {
-      MOCK_PROJECTS.splice(index, 1);
-    }
-    return of(undefined).pipe(
-      delay(500),
-      tap(() => console.log(`Proyecto ${projectId} eliminado (simulado)`))
-    );
-
-    // --- CÓDIGO REAL ---
-    // return this.http.delete<void>(`${this.apiUrl}/projects/${projectId}`);
-  }
-  updateTask(taskId: string, updates: Partial<Task>): Observable<Task> {
-    console.warn('--- MODO SIMULACIÓN: updateTask ---');
-    const task = MOCK_TASKS.find(t => t.id === taskId);
-    if (task) {
-      // Actualiza los campos encontrados en 'updates'
-      Object.assign(task, updates);
-      return of(task).pipe(delay(500));
-    }
-    return throwError(() => new Error('Tarea no encontrada'));
+    return this.http.delete<void>(`${this.apiUrl}/projects/${projectId}`);
   }
 
-  /** Elimina una tarea (SIMULADO) */
+  getProjectById(id: string): Observable<Project> {
+    return this.http.get<Project>(`${this.apiUrl}/projects/${id}`);
+  }
+
+
+  getTasksForProject(projectId: string): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.apiUrl}/projects/${projectId}/tasks`);
+  }
+
+  createTask(projectId: string, taskData: Partial<Task>): Observable<Task>{
+    return this.http.post<Task>(`${this.apiUrl}/projects/${projectId}/tasks`, taskData);
+  }
+
+  updateTask(taskId: string, taskUpdate: Partial<Task>): Observable<Task> {
+    return this.http.put<Task>(`${this.apiUrl}/tasks/${taskId}`, taskUpdate);
+  }
+
   deleteTask(taskId: string): Observable<void> {
-    console.warn('--- MODO SIMULACIÓN: deleteTask ---');
-    const index = MOCK_TASKS.findIndex(t => t.id === taskId);
-    if (index > -1) {
-      MOCK_TASKS.splice(index, 1);
-    }
-    return of(undefined).pipe(delay(500));
+    return this.http.delete<void>(`${this.apiUrl}/tasks/${taskId}`);
   }
+
+  getProjectWithTasks(projectId: string): Observable<ProjectDetailsResponse> {
+    return forkJoin({
+      project: this.getProjectById(projectId),
+      tasks: this.getTasksForProject(projectId)
+    });
+  }
+
 }

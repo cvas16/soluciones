@@ -1,14 +1,14 @@
 import { Component, Input, Output, EventEmitter, inject, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Task } from '../../models/task.model';
 import { ProjectService } from '../../services/project.service';
 @Component({
   selector: 'app-task-detail-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, NgIf, FormsModule],
   templateUrl: './task-detail-modal.html',
-  styleUrl: './task-detail-modal.css',
+  styleUrls: ['./task-detail-modal.css'],
 })
 export class TaskDetailModal implements OnChanges{
   @Input() isVisible = false;
@@ -17,7 +17,7 @@ export class TaskDetailModal implements OnChanges{
   @Output() closed = new EventEmitter<void>();
   @Output() taskUpdated = new EventEmitter<Task>();
   @Output() taskDeleted = new EventEmitter<string>();
-
+  newAttachmentUrl: string = '';
   private projectService = inject(ProjectService);
 
   editedTask: Partial<Task> = {};
@@ -27,6 +27,38 @@ export class TaskDetailModal implements OnChanges{
     if (changes['task'] && this.task) {
       this.editedTask = { ...this.task };
     }
+  }
+  addAttachment(): void {
+    if (!this.newAttachmentUrl.trim()) return;
+
+    if (!this.editedTask.attachments) {
+        this.editedTask.attachments = [];
+    }
+    this.editedTask.attachments.push(this.newAttachmentUrl);
+    this.newAttachmentUrl = '';
+  }
+  removeAttachment(index: number): void {
+      this.editedTask.attachments?.splice(index, 1);
+  }
+  getTimeAgo(dateString?: string): string {
+    if (!dateString) return 'Recientemente';
+
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+
+    let interval = seconds / 31536000;
+    if (interval > 1) return 'Hace ' + Math.floor(interval) + ' años';
+    interval = seconds / 2592000;
+    if (interval > 1) return 'Hace ' + Math.floor(interval) + ' meses';
+    interval = seconds / 86400;
+    if (interval > 1) return 'Hace ' + Math.floor(interval) + ' días';
+    interval = seconds / 3600;
+    if (interval > 1) return 'Hace ' + Math.floor(interval) + ' horas';
+    interval = seconds / 60;
+    if (interval > 1) return 'Hace ' + Math.floor(interval) + ' minutos';
+
+    return 'Hace unos segundos';
   }
 
   close(): void {

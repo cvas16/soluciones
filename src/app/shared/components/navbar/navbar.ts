@@ -1,14 +1,14 @@
 import { Component, inject} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../../core/services/auth.services';
 @Component({
   selector: 'app-navbar',
   standalone:true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, NgIf, RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
+  styleUrls: ['./navbar.css'],
 })
 export class Navbar {
   private authService = inject(AuthService);

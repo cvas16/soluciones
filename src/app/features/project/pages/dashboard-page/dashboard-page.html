@@ -4,16 +4,14 @@
     <div class="header-content">
       <div class="header-left">
         <h1 class="page-title">
-          <span class="title-icon">📊</span> Mis Proyectos
+          <span class="title-icon">📊</span>
+          Mis Proyectos
         </h1>
         <p class="page-subtitle">Gestiona y organiza todos tus proyectos en un solo lugar</p>
       </div>
-      <button class="btn btn-create" (click)="createNewProject()" [disabled]="isCreatingProject">
-        <span *ngIf="!isCreatingProject">
-          <span class="btn-icon">+</span> Crear Proyecto
-        </span>
-        <span *ngIf="isCreatingProject" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-        <span *ngIf="isCreatingProject"> Creando...</span>
+
+      <button class="btn btn-create" (click)="createNewProject()">
+        <span class="btn-icon">+</span> Crear Proyecto
       </button>
     </div>
   </div>
@@ -21,8 +19,7 @@
   <app-spinner *ngIf="isLoading" message="Cargando proyectos..."></app-spinner>
 
   <div *ngIf="errorMessage" class="alert alert-danger">
-    <span class="alert-icon">⚠️</span>
-    {{ errorMessage }}
+    <span class="alert-icon">⚠️</span> {{ errorMessage }}
   </div>
 
   <div *ngIf="!isLoading && !errorMessage" class="projects-section">
@@ -36,6 +33,7 @@
       </div>
 
       <div class="projects-grid">
+
         <div *ngFor="let project of projects; let i = index"
              class="project-card"
              [style.animation-delay]="(i * 0.1) + 's'">
@@ -46,19 +44,16 @@
              </h3>
              <div class="project-meta">
                 <span class="project-meta-item">
-                  <span class="meta-icon">📋</span>
-                  <span class="meta-text">0 tareas</span>
+                  <span class="meta-icon">📋</span> <span class="meta-text">0 tareas</span>
                 </span>
                 <span class="project-meta-item">
-                  <span class="meta-icon">👥</span>
-                  <span class="meta-text">1 miembro</span>
+                  <span class="meta-icon">👥</span> <span class="meta-text">1 miembro</span>
                 </span>
              </div>
 
             <div class="project-footer">
               <button class="btn btn-view" [routerLink]="['/project', project.id]">
-                <span class="btn-icon">👁️</span>
-                Ver Proyecto
+                <span class="btn-icon">👁️</span> Ver Proyecto
               </button>
 
               <button class="btn btn-delete"
@@ -67,19 +62,31 @@
                 <span *ngIf="deletingProjectId !== project.id" class="btn-icon">🗑️</span>
                 <span *ngIf="deletingProjectId === project.id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
               </button>
-
             </div>
           </div>
         </div>
 
         <div class="project-card project-card-create" (click)="createNewProject()">
-           </div>
+          <div class="create-content">
+            <div class="create-icon">+</div>
+            <p class="create-text">Crear nuevo proyecto</p>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <ng-template #noProjects>
       <div class="empty-state">
-         </div>
+        <div class="empty-state-icon">📂</div>
+        <h3 class="empty-state-title">No tienes proyectos aún</h3>
+        <p class="empty-state-description">
+          Comienza creando tu primer proyecto para organizar tus tareas.
+        </p>
+        <button class="btn btn-create btn-large" (click)="createNewProject()">
+          <span class="btn-icon">+</span> Crear mi primer proyecto
+        </button>
+      </div>
     </ng-template>
   </div>
 </div>
@@ -95,5 +102,10 @@
      <strong>"{{ projectToDeleteName }}"</strong>?
   </p>
   <p class="text-danger fw-bold">Esta acción no se puede deshacer.</p>
-
 </app-modal>
+
+<app-project-create-modal
+  [isVisible]="showCreateModal"
+  (closed)="showCreateModal = false"
+  (projectCreated)="onProjectCreated()">
+</app-project-create-modal>

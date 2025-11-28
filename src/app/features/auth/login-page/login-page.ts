@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Subscription } from 'rxjs';
 
 import { AuthService } from '../../../core/services/auth.services';
@@ -9,11 +9,11 @@ import { AuthService } from '../../../core/services/auth.services';
 @Component({
   selector: 'app-login-page',
   standalone:true,
-  imports: [CommonModule,
+  imports: [CommonModule, NgIf,
     ReactiveFormsModule,
     RouterLink],
   templateUrl: './login-page.html',
-  styleUrl: './login-page.css',
+  styleUrls: ['./login-page.css'],
 })
 export class LoginPage implements OnInit, OnDestroy{
   private fb = inject(FormBuilder);

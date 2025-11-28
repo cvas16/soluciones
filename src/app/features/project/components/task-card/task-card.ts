@@ -1,14 +1,32 @@
 import { Task } from './../../models/task.model';
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input,Output, EventEmitter} from '@angular/core';
+import { CommonModule, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-task-card',
   standalone:true,
-  imports: [CommonModule],
   templateUrl: './task-card.html',
-  styleUrl: './task-card.css',
+  styleUrls: ['./task-card.css'],
+  imports: [CommonModule, NgIf],
 })
 export class TaskCard {
   @Input() task: Task | null = null;
+  @Output() statusChange = new EventEmitter<string>();
+
+  isCompleted(): boolean {
+    return this.task?.status === 'Hecho' || this.task?.status === 'Finalizado';
+  }
+  toggleCompletion() {
+    if (!this.task) return;
+    // Si ya está hecho, lo mandamos a Pendiente, si no, a Hecho
+    const newStatus = this.isCompleted() ? 'Pendiente' : 'Hecho';
+    this.statusChange.emit(newStatus);
+  }
+  getBadgeClass(): string {
+    switch (this.task?.status) {
+      case 'Hecho': return 'bg-success'; // Verde
+      case 'En Progreso': return 'bg-primary'; // Azul
+      default: return 'bg-secondary'; // Gris
+    }
+  }
 }

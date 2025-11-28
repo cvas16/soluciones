@@ -1,49 +1,126 @@
 <div *ngIf="isVisible" class="modal-backdrop" (click)="close()">
   <div class="modal-dialog" (click)="$event.stopPropagation()">
 
-    <div class="modal-content" *ngIf="task">
+    <div class="modal-content-wrapper" *ngIf="task">
 
       <div class="modal-header">
-        <div class="title-input-wrapper">
-          <label class="small-label">Título</label>
-          <input type="text" [(ngModel)]="editedTask.title" class="form-control title-input">
+        <div class="breadcrumb">
+          <div class="project-icon"></div>
+          <span>TaskFlow</span> /
+          <a href="javascript:void(0)" class="task-id-link">TF-{{ task.id }}</a>
         </div>
-        <button class="btn-close" (click)="close()">×</button>
+        <button class="close-btn" (click)="close()">×</button>
       </div>
 
-      <div class="modal-body">
+      <div class="modal-body-layout">
 
-        <div class="row mb-3">
-          <div class="col-6">
-            <label class="small-label">Estado</label>
-            <select [(ngModel)]="editedTask.status" class="form-select">
-              <option value="Pendiente">Pendiente</option>
-              <option value="En Progreso">En Progreso</option>
-              <option value="Hecho">Hecho</option>
-            </select>
-          </div>
+        <div class="main-content">
+
+          <input type="text"
+                 [(ngModel)]="editedTask.title"
+                 class="title-input"
+                 placeholder="Resumen de la tarea">
+
+          <div class="section-group">
+            <h5 class="section-label">Descripción</h5>
+            <textarea
+              [(ngModel)]="editedTask.description"
+              class="description-area"
+              rows="6"
+              placeholder="Añade una descripción detallada..."></textarea>
           </div>
 
-        <div class="form-group">
-          <label class="small-label">Descripción</label>
-          <textarea
-            [(ngModel)]="editedTask.description"
-            class="form-control description-area"
-            rows="5"
-            placeholder="Añade una descripción más detallada...">
-          </textarea>
+          <div class="section-group mt-4">
+            <h5 class="section-label">Archivos adjuntos</h5>
+            <div class="attachments-list">
+              <div *ngFor="let url of editedTask.attachments; let i = index" class="attachment-card">
+                <div class="attachment-thumb">📄</div>
+                <div class="text-truncate" style="font-size: 0.8rem;">Adjunto {{i+1}}</div>
+                <button class="btn btn-danger btn-sm mt-1" style="font-size: 0.7rem" (click)="removeAttachment(i)">Quitar</button>
+              </div>
+
+              <div class="attachment-card d-flex align-items-center justify-content-center" style="cursor: pointer; border-style: dashed;" (click)="addAttachment()">
+                <span style="font-size: 2rem; color: #ccc;">+</span>
+              </div>
+            </div>
+             <div class="input-group mt-2">
+                <input type="text" class="form-control form-control-sm" placeholder="Pegar URL..." [(ngModel)]="newAttachmentUrl">
+                <button class="btn btn-sm btn-secondary" (click)="addAttachment()">Añadir</button>
+             </div>
+          </div>
+
+          </div>
+
+        <div class="sidebar">
+
+          <div class="sidebar-section">
+            <div class="sidebar-group">
+              <label class="field-label">ESTADO</label>
+              <select [(ngModel)]="editedTask.status"
+                      class="status-select"
+                      [attr.value]="editedTask.status"> <option value="Pendiente">PENDIENTE</option>
+                <option value="En Progreso">EN CURSO</option>
+                <option value="Hecho">HECHO</option>
+                <option value="Desestimado">DESESTIMADO</option>
+              </select>
+            </div>
+
+            <div class="sidebar-group">
+              <label class="field-label">PRIORIDAD</label>
+              <select [(ngModel)]="editedTask.priority" class="form-select form-select-sm border-0 bg-transparent fw-bold ps-0" style="color: #172b4d;">
+                 <option value="Alta">Alta</option>
+                 <option value="Media">Media</option>
+                 <option value="Baja">Baja</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <label class="field-label mb-3" style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding-bottom: 5px; width: 100%;">PERSONAS</label>
+
+            <div class="sidebar-group">
+              <label class="field-label">Responsable</label>
+              <div class="user-row">
+                <div class="user-avatar">
+                  {{ task.assignedUsername ? task.assignedUsername.charAt(0).toUpperCase() : '?' }}
+                </div>
+                <span class="user-name">{{ task.assignedUsername || 'Sin asignar' }}</span>
+              </div>
+            </div>
+
+            <div class="sidebar-group">
+              <label class="field-label">Informador</label>
+              <div class="user-row">
+                <div class="user-avatar" style="background: #eae6ff; color: #403294;">
+                  {{ task.createdByUsername ? task.createdByUsername.charAt(0).toUpperCase() : '?' }}
+                </div>
+                <span class="user-name">{{ task.createdByUsername || 'Sistema' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <label class="field-label mb-3" style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding-bottom: 5px; width: 100%;">FECHAS</label>
+            <div class="sidebar-group">
+              <label class="field-label">Creado</label>
+              <span class="date-text">{{ getTimeAgo(task.createdAt) }}</span>
+            </div>
+            <div class="sidebar-group">
+              <label class="field-label">Actualizado</label>
+              <span class="date-text">Hace un momento</span>
+            </div>
+          </div>
+
         </div>
 
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-danger-link" (click)="deleteTask()">Eliminar Tarea</button>
-        <div class="actions-right">
-          <button class="btn btn-secondary" (click)="close()">Cancelar</button>
-          <button class="btn btn-primary" (click)="save()" [disabled]="isSaving">
-            {{ isSaving ? 'Guardando...' : 'Guardar Cambios' }}
-          </button>
-        </div>
+        <button class="btn btn-danger" (click)="deleteTask()">Eliminar</button>
+        <div style="flex: 1"></div> <button class="btn btn-secondary" (click)="close()">Cancelar</button>
+        <button class="btn btn-primary" (click)="save()" [disabled]="isSaving">
+          {{ isSaving ? 'Guardando...' : 'Guardar' }}
+        </button>
       </div>
 
     </div>
