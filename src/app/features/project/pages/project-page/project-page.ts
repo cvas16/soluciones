@@ -1,6 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
 import { ProjectService } from '../../services/project.service';
 import { Project } from '../../models/project.model';
 import { Task } from '../../models/task.model';
@@ -15,13 +16,15 @@ import { TaskDetailModal } from '../../components/task-detail-modal/task-detail-
   templateUrl: './project-page.html',
   styleUrls: ['./project-page.css'],
 })
-export class ProjectPage implements OnInit{
+export class ProjectPage implements OnInit, OnDestroy{
   private route = inject(ActivatedRoute);
+  private document = inject(DOCUMENT);
   private router = inject(Router);
   private projectService = inject(ProjectService);
 
   projectId: string | null = null;
   project: Project | null = null;
+
   columns: { [key: string]: Task[] } = {
     'Pendiente': [],
     'En Análisis': [],
@@ -64,6 +67,15 @@ export class ProjectPage implements OnInit{
     this.projectService.getProjectWithTasks(id).subscribe({
       next: (data) => {
         this.project = data.project;
+        // Apply project background to the body for a full-page effect
+        if (this.project?.background) {
+          this.document.body.style.background = this.project.background;
+          this.document.body.style.backgroundSize = 'cover';
+          this.document.body.style.backgroundPosition = 'center';
+          this.document.body.style.backgroundRepeat = 'no-repeat';
+          this.document.body.style.backgroundAttachment = 'fixed';
+        }
+          console.log('Project loaded, background:', this.project?.background);
         this.organizeTasks(data.tasks);
         this.isLoading = false;
       },
@@ -73,6 +85,15 @@ export class ProjectPage implements OnInit{
         this.isLoading = false;
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    // Remove project background from body to avoid persisting between routes
+    this.document.body.style.background = '';
+    this.document.body.style.backgroundSize = '';
+    this.document.body.style.backgroundPosition = '';
+    this.document.body.style.backgroundRepeat = '';
+    this.document.body.style.backgroundAttachment = '';
   }
   private organizeTasks(allTasks: Task[]) {
     this.columns = {
@@ -85,14 +106,11 @@ export class ProjectPage implements OnInit{
     };
 
     allTasks.forEach(task => {
-      if (task.status === 'En Progreso') task.status = 'En Desarrollo';
-      if (task.status === 'Hecho') task.status = 'Finalizado';
-
-      if (this.columns[task.status]) {
-        this.columns[task.status].push(task);
-      } else {
-        this.columns['Pendiente'].push(task);
+      const targetColumn = this.columns[task.status] ? task.status : 'Pendiente';
+      if (task.status !== targetColumn) {
+          task.status = targetColumn;
       }
+      this.columns[targetColumn].push(task);
     });
   }
 
@@ -146,10 +164,9 @@ export class ProjectPage implements OnInit{
       this.columns[oldStatus] = this.columns[oldStatus].filter(t => t.id !== task.id);
     }
     task.status = newStatus;
-    if (this.columns[newStatus]) {
-      this.columns[newStatus].push(task);
-    } else {
-       this.columns['Pendiente'].push(task);
+    const targetColumn = this.columns[newStatus] ? newStatus : 'Finalizado';
+    if (this.columns[targetColumn]) {
+        this.columns[targetColumn].push(task);
     }
     this.projectService.updateTask(task.id, { status: newStatus }).subscribe({
       next: () => console.log(`Tarea marcada como ${newStatus}`),

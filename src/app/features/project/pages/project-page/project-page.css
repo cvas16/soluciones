@@ -1,4 +1,3 @@
-/* 1. Contenedor Principal: Ocupa toda la pantalla disponible */
 :host {
   display: block;
   /* Altura total menos el tamaño de tu Navbar (aprox 60px-70px) */
@@ -11,23 +10,57 @@
   flex-direction: column; /* Organiza Header arriba, Tablero abajo */
   height: 100%;
   background-color: #ffffff;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* fix to viewport so it covers all like Trello */
+  position: relative; /* for overlay */
 }
-
-/* 2. Header: Se queda fijo y no se encoge */
 .project-header {
   flex-shrink: 0; /* Evita que el header se aplaste */
   padding: 20px 30px;
-  border-bottom: 1px solid #ebecf0;
-  background-color: #fff;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  background-color: transparent; /* Make header transparent so background shows */
+  position: relative;
+  z-index: 2; /* above overlay */
 }
 
+/* keep header content above overlay */
+.project-container.has-background::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.35); /* Global overlay for entire container */
+  z-index: 1;
+}
+.header-left, .header-right {
+  position: relative;
+  z-index: 3; /* Texto above overlay */
+}
+
+.project-title, .breadcrumbs {
+  color: white !important; /* Forzar texto blanco */
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5); /* Sombra para legibilidad */
+}
 /* 3. Wrapper del Tablero: Este es el que hace SCROLL */
 .board-wrapper {
   flex-grow: 1; /* Ocupa todo el espacio restante hacia abajo */
   overflow-x: auto; /* Habilita el scroll horizontal AQUÍ */
   overflow-y: hidden; /* Oculta scroll vertical innecesario */
   padding: 20px 30px;
-  background-color: #fff; /* O el color de fondo que prefieras */
+  background-color: transparent; /* Allow project-container background to show through */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative; /* required for overlay pseudo-element */
+}
+
+/* removed board-wrapper overlay; overlay handled at project-container level */
+
+.board-wrapper > .board-container,
+.board-wrapper > .board-container * {
+  position: relative;
+  z-index: 1; /* Ensure content sits above overlay */
 }
 
 /* 4. Contenedor de las Columnas: Las alinea en fila */

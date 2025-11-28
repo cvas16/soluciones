@@ -4,4 +4,5 @@ export interface Project {
   name: string;
   description?: string;
   ownerId?: string;
+  background?: string;
 }

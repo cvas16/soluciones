@@ -59,8 +59,10 @@
               <select [(ngModel)]="editedTask.status"
                       class="status-select"
                       [attr.value]="editedTask.status"> <option value="Pendiente">PENDIENTE</option>
-                <option value="En Progreso">EN CURSO</option>
-                <option value="Hecho">HECHO</option>
+                <option value="En Análisis">EN ANALISIS</option>
+                <option value="En Desarrollo">EN DESARROLLO</option>
+                <option value="En Pruebas">EN PRUEBAS</option>
+                <option value="Finalizado">FINALIZADO</option>
                 <option value="Desestimado">DESESTIMADO</option>
               </select>
             </div>

@@ -1,28 +1,64 @@
 <div *ngIf="isVisible" class="modal-backdrop" (click)="close()">
   <div class="modal-dialog" (click)="$event.stopPropagation()">
     <div class="modal-content">
+
       <div class="modal-header">
         <h5>Crear Nuevo Proyecto</h5>
         <button class="btn-close" (click)="close()">×</button>
       </div>
+
       <div class="modal-body">
         <form [formGroup]="projectForm" (ngSubmit)="save()">
+
           <div class="mb-3">
             <label class="form-label">Nombre del Proyecto <span class="text-danger">*</span></label>
             <input type="text" class="form-control" formControlName="name" placeholder="Ej. Rediseño Web">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Descripción</label>
             <textarea class="form-control" formControlName="description" rows="3" placeholder="¿De qué trata este proyecto?"></textarea>
           </div>
-        </form>
+
+          <div class="mb-3">
+            <label class="form-label">Fondo del Tablero</label>
+
+            <div class="background-section mb-2">
+              <small class="text-muted d-block mb-1">Colores</small>
+              <div class="color-picker-grid">
+                <div *ngFor="let bg of gradients"
+                     class="bg-option"
+                     [style.background]="bg"
+                     [class.selected]="selectedBackground === bg"
+                     (click)="selectBackground(bg)">
+                  <span *ngIf="selectedBackground === bg" class="check-icon">✓</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="background-section">
+              <small class="text-muted d-block mb-1">Fotos</small>
+              <div class="color-picker-grid">
+                <div *ngFor="let bg of images"
+                     class="bg-option image-option"
+                     [style.background-image]="bg"
+                     [class.selected]="selectedBackground === bg"
+                     (click)="selectBackground(bg)">
+                  <span *ngIf="selectedBackground === bg" class="check-icon">✓</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          </form>
       </div>
+
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="close()">Cancelar</button>
         <button type="button" class="btn btn-primary" (click)="save()" [disabled]="projectForm.invalid || isSaving">
           {{ isSaving ? 'Creando...' : 'Crear Proyecto' }}
         </button>
       </div>
+
     </div>
   </div>
 </div>

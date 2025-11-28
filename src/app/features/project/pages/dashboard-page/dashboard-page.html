@@ -34,8 +34,10 @@
 
       <div class="projects-grid">
 
-        <div *ngFor="let project of projects; let i = index"
-             class="project-card"
+             <div *ngFor="let project of projects; let i = index"
+               class="project-card"
+               [style.background]="project.background || 'transparent'"
+               [class.has-background]="project.background"
              [style.animation-delay]="(i * 0.1) + 's'">
 
           <div class="project-content">

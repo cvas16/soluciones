@@ -119,6 +119,44 @@
   background-color: #c82333;
   border-color: #bd2130;
 }
+.color-picker-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bg-option {
+  width: 48px;
+  height: 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Propiedades clave para las imágenes */
+  background-size: cover;
+  background-position: center;
+  background-color: #eee; /* Fallback */
+}
+
+.bg-option:hover {
+  filter: brightness(0.9);
+  transform: scale(1.05);
+}
+
+.bg-option.selected {
+  outline: 2px solid #172b4d;
+  outline-offset: 2px;
+}
+
+.check-icon {
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
 
 /* Animaciones */
 @keyframes fadeIn {

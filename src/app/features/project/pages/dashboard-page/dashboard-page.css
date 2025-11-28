@@ -213,6 +213,7 @@
 
 /* Project Card */
 .project-card {
+  position: relative;
   background: white;
   border-radius: 12px;
   overflow: hidden;
@@ -220,7 +221,22 @@
   transition: all 0.3s ease;
   cursor: pointer;
   animation: fadeInUp 0.5s ease forwards;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   opacity: 0;
+}
+
+.project-card.has-background::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35); /* slightly stronger overlay for readability */
+  z-index: 0;
+  border-radius: 8px;
+}
+.project-card.has-background .project-content {
+  position: relative; z-index: 1; color: white; /* make text readable */
 }
 
 @keyframes fadeInUp {
@@ -409,6 +425,13 @@
 .btn-large {
   padding: 14px 32px;
   font-size: 16px;
+}
+.card-bg-header {
+  height: 40px;
+  width: 100%;
+  /* Añade esto para que las imágenes se vean bien */
+  background-size: cover;
+  background-position: center;
 }
 
 /* Responsive */

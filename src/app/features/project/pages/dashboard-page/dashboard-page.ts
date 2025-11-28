@@ -43,6 +43,7 @@ export class DashboardPage implements OnInit, OnDestroy {
     ).subscribe({
       next: (data) => {
         this.projects = data;
+        console.log('Dashboard: loaded projects, sample background:', this.projects?.[0]?.background);
         this.isLoading = false;
       },
       error: (err) => {

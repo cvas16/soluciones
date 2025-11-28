@@ -14,12 +14,11 @@ export class TaskCard {
   @Output() statusChange = new EventEmitter<string>();
 
   isCompleted(): boolean {
-    return this.task?.status === 'Hecho' || this.task?.status === 'Finalizado';
+    return this.task?.status === 'Finalizado';
   }
   toggleCompletion() {
     if (!this.task) return;
-    // Si ya está hecho, lo mandamos a Pendiente, si no, a Hecho
-    const newStatus = this.isCompleted() ? 'Pendiente' : 'Hecho';
+    const newStatus = this.isCompleted() ? 'Pendiente' : 'Finalizado';
     this.statusChange.emit(newStatus);
   }
   getBadgeClass(): string {
