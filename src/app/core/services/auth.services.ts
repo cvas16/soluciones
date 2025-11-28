@@ -84,14 +84,13 @@ export class AuthService {
   }
 
   register(userData: any): Observable<any> {
+    /*
     console.warn('--- MODO DE SIMULACIÓN DE REGISTRO ACTIVO ---');
     return of({ success: true }).pipe(
       delay(500),
       tap(() => console.log('Registro simulado exitoso'))
     );
-
-    /*
-
+    */
     return this.http.post(`${this.apiUrl}/register`, userData).pipe(
       tap(() => console.log('Registro exitoso')),
       catchError(error => {
@@ -99,6 +98,6 @@ export class AuthService {
         return throwError(() => new Error('Error al registrar usuario'));
       })
     );
-    */
+
   }
 }

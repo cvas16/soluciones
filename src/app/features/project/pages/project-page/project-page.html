@@ -14,12 +14,20 @@
 
   <h4>Tablero de Tareas</h4>
   <div class="board-container d-flex flex-row gap-3"
-       cdkDropListGroup> <app-board-column
+      cdkDropListGroup>
+      <app-board-column
       *ngFor="let column of boardColumns"
       [columnTitle]="column"
       [tasks]="getTasksForColumn(column)"
-      (taskDropped)="onTaskDrop($event)"> </app-board-column>
-
+      (taskDropped)="onTaskDrop($event)"
+      (taskClicked)="openTaskDetail($event)"> </app-board-column>
   </div>
+  <app-task-detail-modal
+      [isVisible]="isTaskModalVisible"
+      [task]="selectedTask"
+      (closed)="onTaskModalClose()"
+      (taskUpdated)="onTaskUpdated($event)"
+      (taskDeleted)="onTaskDeleted($event)">
+  </app-task-detail-modal>
 
 </div>

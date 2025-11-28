@@ -6,10 +6,11 @@ import { Project } from '../../models/project.model';
 import { Task } from '../../models/task.model';
 import { BoardColumn } from '../../components/board-column/board-column';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { TaskDetailModal } from '../../components/task-detail-modal/task-detail-modal';
 @Component({
   selector: 'app-project-page',
   standalone:true,
-  imports: [CommonModule,BoardColumn,DragDropModule],
+  imports: [CommonModule,BoardColumn,DragDropModule,TaskDetailModal],
   templateUrl: './project-page.html',
   styleUrl: './project-page.css',
 })
@@ -23,6 +24,8 @@ export class ProjectPage implements OnInit{
   tasks: Task[] = [];
   isLoading = true;
   errorMessage: string | null = null;
+  selectedTask: Task | null = null;
+  isTaskModalVisible = false;
 
 
   boardColumns: string[] = ['Pendiente', 'En Progreso', 'Hecho'];
@@ -107,5 +110,25 @@ export class ProjectPage implements OnInit{
 
   private getColumnTitleFromContainerId(containerId: string): string {
     return containerId;
+  }
+  openTaskDetail(task: Task): void {
+    this.selectedTask = task;
+    this.isTaskModalVisible = true;
+  }
+
+  onTaskModalClose(): void {
+    this.isTaskModalVisible = false;
+    this.selectedTask = null;
+  }
+  onTaskUpdated(updatedTask: Task): void {
+    const index = this.tasks.findIndex(t => t.id === updatedTask.id);
+    if (index !== -1) {
+      const newTasks = [...this.tasks];
+      newTasks[index] = updatedTask;
+      this.tasks = newTasks;
+    }
+  }
+  onTaskDeleted(taskId: string): void {
+    this.tasks = this.tasks.filter(t => t.id !== taskId);
   }
 }

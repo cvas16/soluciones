@@ -14,9 +14,13 @@ export class BoardColumn {
   @Input() columnTitle: string = '';
   @Input() tasks: Task[] = [];
   @Output() taskDropped = new EventEmitter<CdkDragDrop<Task[]>>();
+  @Output() taskClicked = new EventEmitter<Task>();
 
   drop(event: CdkDragDrop<Task[]>) {
     console.log('Drop event en BoardColumn:', event);
     this.taskDropped.emit(event);
+  }
+  onTaskClick(task: Task) {
+    this.taskClicked.emit(task);
   }
 }

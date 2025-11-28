@@ -10,7 +10,6 @@ interface ProjectDetailsResponse {
   tasks: Task[];
 }
 
-// Creamos datos falsos para que el servicio los devuelva
 const MOCK_PROJECTS: Project[] = [
   { id: '1', name: 'Proyecto TaskFlow (Angular)', description: 'Desarrollar el frontend' },
   { id: '2', name: 'Proyecto TaskFlow (Spring)', description: 'Desarrollar el backend' },
@@ -24,7 +23,6 @@ const MOCK_TASKS: Task[] = [
   { id: 't4', title: 'Definir modelo User', status: 'Hecho', projectId: '2' },
   { id: 't5', title: 'Configurar Spring Security', status: 'Pendiente', projectId: '2' },
 ];
-// --- FIN DE DATOS SIMULADOS ---
 
 
 @Injectable({
@@ -115,5 +113,25 @@ export class ProjectService {
 
     // --- CÓDIGO REAL ---
     // return this.http.delete<void>(`${this.apiUrl}/projects/${projectId}`);
+  }
+  updateTask(taskId: string, updates: Partial<Task>): Observable<Task> {
+    console.warn('--- MODO SIMULACIÓN: updateTask ---');
+    const task = MOCK_TASKS.find(t => t.id === taskId);
+    if (task) {
+      // Actualiza los campos encontrados en 'updates'
+      Object.assign(task, updates);
+      return of(task).pipe(delay(500));
+    }
+    return throwError(() => new Error('Tarea no encontrada'));
+  }
+
+  /** Elimina una tarea (SIMULADO) */
+  deleteTask(taskId: string): Observable<void> {
+    console.warn('--- MODO SIMULACIÓN: deleteTask ---');
+    const index = MOCK_TASKS.findIndex(t => t.id === taskId);
+    if (index > -1) {
+      MOCK_TASKS.splice(index, 1);
+    }
+    return of(undefined).pipe(delay(500));
   }
 }

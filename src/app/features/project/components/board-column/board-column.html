@@ -8,7 +8,8 @@
        (cdkDropListDropped)="drop($event)"> <app-task-card
       *ngFor="let task of tasks"
       [task]="task"
-      cdkDrag> </app-task-card>
+      cdkDrag
+      (click)="onTaskClick(task)"> </app-task-card>
 
     <div *ngIf="tasks.length === 0" class="text-muted text-center p-3">
       No hay tareas aquí.
