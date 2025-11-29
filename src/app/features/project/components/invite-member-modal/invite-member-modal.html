@@ -1,0 +1,62 @@
+<div *ngIf="isVisible" class="modal-backdrop" (click)="close()">
+  <div class="modal-dialog" (click)="$event.stopPropagation()">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Invitar al Proyecto</h5>
+        <button class="btn-close" (click)="close()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="text-muted mb-3">
+          Ingresa el nombre de usuario de la persona que quieres añadir a este proyecto.
+        </p>
+
+        <div class="mb-3 position-relative">
+          <label class="form-label">Nombre de Usuario</label>
+          <div class="input-group">
+            <span class="input-group-text">@</span>
+            <input
+              type="text"
+              class="form-control"
+              [(ngModel)]="usernameToInvite"
+              (input)="onSearch($event)"
+              placeholder="Escribe para buscar..."
+              autocomplete="off"
+              [class.is-invalid]="errorMessage"
+            />
+          </div>
+          <ul *ngIf="showDropdown" class="search-dropdown shadow-sm">
+            <li *ngFor="let user of searchResults" (click)="selectUser(user)">
+              <div class="d-flex align-items-center gap-2">
+                <div class="user-avatar-sm">{{ user.username.charAt(0).toUpperCase() }}</div>
+                <span>{{ user.username }}</span>
+                <small class="text-muted ms-auto" style="font-size: 0.75rem">{{
+                  user.email
+                }}</small>
+              </div>
+            </li>
+          </ul>
+
+          <div
+            *ngIf="errorMessage"
+            class="text-danger mt-2 small fw-bold d-flex align-items-center gap-1"
+          >
+            <span>⚠️</span> {{ errorMessage }}
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="close()">Cancelar</button>
+        <button
+          class="btn btn-primary"
+          (click)="invite()"
+          [disabled]="!usernameToInvite || isLoading"
+        >
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1"></span>
+          {{ isLoading ? 'Invitando...' : 'Enviar Invitación' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

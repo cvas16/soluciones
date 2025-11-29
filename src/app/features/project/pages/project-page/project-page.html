@@ -1,23 +1,30 @@
-<div class="project-container" *ngIf="project && !isLoading && !errorMessage"
-  [class.has-background]="project.background">
-
+<div
+  class="project-container"
+  *ngIf="project && !isLoading && !errorMessage"
+  [class.has-background]="project.background"
+>
   <div class="project-header">
     <div class="header-left">
-      <div class="breadcrumbs">
-        Proyectos <span>/</span> {{ project.name }}
-      </div>
+      <div class="breadcrumbs">Proyectos <span>/</span> {{ project.name }}</div>
       <h1 class="project-title">{{ project.name }}</h1>
       <p class="project-desc" *ngIf="project.description">{{ project.description }}</p>
     </div>
 
-    <div class="header-right">
-       </div>
+    <div class="header-right d-flex align-items-center gap-3">
+      <div class="member-stack" *ngIf="project.members && project.members.length > 0">
+        <div *ngFor="let member of project.members" class="member-avatar" [title]="member">
+          {{ member.charAt(0).toUpperCase() }}
+        </div>
+      </div>
+      <button class="btn btn-light btn-sm d-flex align-items-center gap-2" (click)="inviteUser()">
+        <i class="bi bi-person-plus-fill"></i>
+        <span>Invitar</span>
+      </button>
+    </div>
   </div>
 
   <div class="board-wrapper">
-
     <div class="board-container" cdkDropListGroup>
-
       <app-board-column
         *ngFor="let column of boardColumns"
         [columnTitle]="column"
@@ -25,12 +32,11 @@
         [projectId]="project.id"
         (taskDropped)="onTaskDrop($event)"
         (taskClicked)="openTaskDetail($event)"
-        (taskMoved)="onQuickStatusChange($event)">
+        (taskMoved)="onQuickStatusChange($event)"
+      >
       </app-board-column>
-
     </div>
   </div>
-
 </div>
 
 <div *ngIf="isLoading" class="text-center mt-5">
@@ -48,5 +54,13 @@
   [task]="selectedTask"
   (closed)="onTaskModalClose()"
   (taskUpdated)="onTaskUpdated($event)"
-  (taskDeleted)="onTaskDeleted($event)">
+  (taskDeleted)="onTaskDeleted($event)"
+  [projectMembers]="project?.members || []"
+>
 </app-task-detail-modal>
+<app-invite-member-modal
+  [isVisible]="showInviteModal"
+  [projectId]="project?.id || ''"
+  (closed)="showInviteModal = false"
+>
+</app-invite-member-modal>

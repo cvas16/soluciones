@@ -3,6 +3,8 @@ import { CommonModule, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Task } from '../../models/task.model';
 import { ProjectService } from '../../services/project.service';
+import { User } from '../../../../shared/models/user.model';
+
 @Component({
   selector: 'app-task-detail-modal',
   standalone: true,
@@ -13,7 +15,7 @@ import { ProjectService } from '../../services/project.service';
 export class TaskDetailModal implements OnChanges{
   @Input() isVisible = false;
   @Input() task: Task | null = null; // La tarea a editar
-
+  @Input() projectMembers: string[] = [];
   @Output() closed = new EventEmitter<void>();
   @Output() taskUpdated = new EventEmitter<Task>();
   @Output() taskDeleted = new EventEmitter<string>();
@@ -93,5 +95,10 @@ export class TaskDetailModal implements OnChanges{
         this.close();
       }
     });
+  }
+
+  assignUser(username: string): void {
+      this.editedTask.assignedUserId = undefined;
+      this.editedTask.assignedUsername = username;
   }
 }

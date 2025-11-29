@@ -8,11 +8,12 @@ import { Task } from '../../models/task.model';
 import { BoardColumn } from '../../components/board-column/board-column';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TaskDetailModal } from '../../components/task-detail-modal/task-detail-modal';
+import { InviteMemberModal } from '../../components/invite-member-modal/invite-member-modal';
 
 @Component({
   selector: 'app-project-page',
   standalone:true,
-  imports: [CommonModule, NgIf,BoardColumn,DragDropModule,TaskDetailModal],
+  imports: [CommonModule, NgIf,BoardColumn,DragDropModule,TaskDetailModal,InviteMemberModal],
   templateUrl: './project-page.html',
   styleUrls: ['./project-page.css'],
 })
@@ -21,7 +22,6 @@ export class ProjectPage implements OnInit, OnDestroy{
   private document = inject(DOCUMENT);
   private router = inject(Router);
   private projectService = inject(ProjectService);
-
   projectId: string | null = null;
   project: Project | null = null;
 
@@ -37,6 +37,7 @@ export class ProjectPage implements OnInit, OnDestroy{
   errorMessage: string | null = null;
   selectedTask: Task | null = null;
   isTaskModalVisible = false;
+  showInviteModal = false;
 
   boardColumns: string[] = [
     'Pendiente',
@@ -67,9 +68,7 @@ export class ProjectPage implements OnInit, OnDestroy{
     this.projectService.getProjectWithTasks(id).subscribe({
       next: (data) => {
         this.project = data.project;
-        // Apply project background to the body for a full-page effect
         if (this.project?.background) {
-          // Apply background image/gradient to body and add a class for CSS control
           this.document.body.style.background = this.project.background;
           this.document.body.style.backgroundSize = 'cover';
           this.document.body.style.backgroundPosition = 'center';
@@ -89,7 +88,6 @@ export class ProjectPage implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-    // Remove project background from body to avoid persisting between routes
     this.document.body.style.background = '';
     this.document.body.style.backgroundSize = '';
     this.document.body.style.backgroundPosition = '';
@@ -175,5 +173,9 @@ export class ProjectPage implements OnInit, OnDestroy{
         console.error('Error actualizando estado:', err);
       }
     });
+  }
+  inviteUser(): void {
+   if (!this.project) return;
+    this.showInviteModal = true;
   }
 }

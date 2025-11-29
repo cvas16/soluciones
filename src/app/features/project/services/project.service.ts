@@ -4,6 +4,7 @@ import { Observable, forkJoin, of, delay, tap, catchError, throwError } from 'rx
 import { environment } from '../../../../environments/environment.development';
 import { Project } from '../models/project.model';
 import { Task } from '../models/task.model';
+import { User } from '../../../shared/models/user.model';
 
 interface ProjectDetailsResponse {
   project: Project;
@@ -58,4 +59,20 @@ export class ProjectService {
     });
   }
 
+  inviteMember(projectId: string, username: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.apiUrl}/projects/${projectId}/members`,
+      null,
+      { params: { username } }
+    );
+  }
+
+  searchUsers(query: string): Observable<User[]> {
+    if (!query.trim()) {
+      return of([]); // Si está vacío, devuelve lista vacía
+    }
+    return this.http.get<User[]>(`${this.apiUrl}/users/search`, {
+      params: { query }
+    });
+  }
 }

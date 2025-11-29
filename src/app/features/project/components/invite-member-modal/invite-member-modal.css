@@ -1,0 +1,110 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 80px;
+}
+
+.modal-dialog {
+  background: white;
+  border-radius: 8px;
+  width: 450px;
+  max-width: 95%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+.modal-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: black;
+}
+
+.modal-body {
+  padding: 24px;
+}
+.form-label{
+  color: black;
+}
+.modal-footer {
+  padding: 16px 24px;
+  background: #f8f9fa;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.text-danger {
+  color: #dc3545;
+}
+.form-control.is-invalid {
+  border-color: #dc3545;
+  background-image: none;
+}
+
+.btn-close {
+  background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999;
+}
+.position-relative {
+  position: relative;
+}
+
+/* El contenedor de la lista flotante */
+.search-dropdown {
+  position: absolute;
+  top: 100%; /* Justo debajo del input */
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 0 0 6px 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  color: #495057;
+}
+
+.search-dropdown li {
+  padding: 10px 15px;
+  cursor: pointer;
+  border-bottom: 1px solid #f1f1f1;
+  transition: background 0.1s;
+}
+
+.search-dropdown li:hover {
+  background-color: #f8f9fa;
+}
+
+.search-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.user-avatar-sm {
+  width: 24px;
+  height: 24px;
+  background-color: #e9ecef;
+  color: #495057;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}

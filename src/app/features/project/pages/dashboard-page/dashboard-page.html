@@ -1,5 +1,4 @@
 <div class="projects-page">
-
   <div class="page-header">
     <div class="header-content">
       <div class="header-left">
@@ -19,12 +18,12 @@
   <app-spinner *ngIf="isLoading" message="Cargando proyectos..."></app-spinner>
 
   <div *ngIf="errorMessage" class="alert alert-danger">
-    <span class="alert-icon"><i class="bi bi-exclamation-triangle-fill"></i></span> {{ errorMessage }}
+    <span class="alert-icon"><i class="bi bi-exclamation-triangle-fill"></i></span>
+    {{ errorMessage }}
   </div>
 
   <div *ngIf="!isLoading && !errorMessage" class="projects-section">
     <div *ngIf="projects.length > 0; else noProjects">
-
       <div class="section-header">
         <h2 class="section-title">
           <span class="section-icon"><i class="bi bi-clock-history"></i></span> Proyectos Recientes
@@ -33,37 +32,49 @@
       </div>
 
       <div class="projects-grid">
-
-             <div *ngFor="let project of projects; let i = index"
-               class="project-card"
-               [style.background]="project.background || 'transparent'"
-               [class.has-background]="project.background"
-             [style.animation-delay]="(i * 0.1) + 's'">
+        <div
+          *ngFor="let project of projects; let i = index"
+          class="project-card"
+          [style.background]="project.background || 'transparent'"
+          [class.has-background]="project.background"
+          [style.animation-delay]="i * 0.1 + 's'"
+        >
           <div class="card-overlay"></div>
           <div class="project-content">
-             <h3 class="project-name">
-               <a [routerLink]="['/project', project.id]">{{ project.name }} </a>
-             </h3>
-             <div class="project-meta text-white-50">
-                <span class="project-meta-item">
-                  <span class="meta-icon"><i class="bi bi-list-task me-1"></i></span> <span class="meta-text">0 tareas</span>
-                </span>
-                <span class="project-meta-item">
-                  <span class="meta-icon"><i class="bi bi-people-fill me-1"></i></span> <span class="meta-text">1 miembro</span>
-                </span>
-             </div>
+            <h3 class="project-name">
+              <a [routerLink]="['/project', project.id]">{{ project.name }} </a>
+            </h3>
+            <div class="project-meta text-white-50">
+              <span class="project-meta-item">
+                <span class="meta-icon"><i class="bi bi-list-task me-1"></i></span>
+                <span class="meta-text">{{ project.taskCount || 0 }} tareas</span>
+              </span>
+              <span class="project-meta-item">
+                <span class="meta-icon"><i class="bi bi-people-fill me-1"></i></span>
+                <span class="meta-text">{{ project.membersCount || 1 }} miembro(s)</span>
+              </span>
+            </div>
 
-            <div class="project-footer mt-auto pt-3 d-flex justify-content-between align-items-center" >
+            <div
+              class="project-footer mt-auto pt-3 d-flex justify-content-between align-items-center"
+            >
               <button class="btn btn-view" [routerLink]="['/project', project.id]">
-                <span class="badge bg-light text-dark"><i class="bi bi-eye me-1"></i></span> Ver Proyecto
+                <span class="badge bg-light text-dark"><i class="bi bi-eye me-1"></i></span> Ver
+                Proyecto
               </button>
 
-              <button class="btn btn-sm btn-danger position-relative z-2"
-                      (click)="openDeleteModal(project); $event.stopPropagation()"
-                      [disabled]="deletingProjectId === project.id">
-
+              <button
+                class="btn btn-sm btn-danger position-relative z-2"
+                (click)="openDeleteModal(project); $event.stopPropagation()"
+                [disabled]="deletingProjectId === project.id"
+              >
                 <i *ngIf="deletingProjectId !== project.id" class="bi bi-trash"></i>
-                <span *ngIf="deletingProjectId === project.id" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                <span
+                  *ngIf="deletingProjectId === project.id"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
               </button>
             </div>
           </div>
@@ -75,13 +86,14 @@
             <p class="create-text">Crear nuevo proyecto</p>
           </div>
         </div>
-
       </div>
     </div>
 
     <ng-template #noProjects>
       <div class="empty-state text-center py-5">
-        <div class="empty-state-icon mb-3"><i class="bi bi-folder2-open display-1 text-muted"></i></div>
+        <div class="empty-state-icon mb-3">
+          <i class="bi bi-folder2-open display-1 text-muted"></i>
+        </div>
         <h3 class="empty-state-title">No tienes proyectos aún</h3>
         <p class="empty-state-description text-muted">
           Comienza creando tu primer proyecto para organizar tus tareas.
@@ -99,10 +111,10 @@
   title="Confirmar Eliminación"
   confirmType="danger"
   (closed)="onModalClose()"
-  (confirmed)="onModalConfirm()">
-
-  <p>¿Estás seguro de que quieres eliminar el proyecto
-     <strong>"{{ projectToDeleteName }}"</strong>?
+  (confirmed)="onModalConfirm()"
+>
+  <p>
+    ¿Estás seguro de que quieres eliminar el proyecto <strong>"{{ projectToDeleteName }}"</strong>?
   </p>
   <p class="text-danger fw-bold">Esta acción no se puede deshacer.</p>
 </app-modal>
@@ -110,5 +122,6 @@
 <app-project-create-modal
   [isVisible]="showCreateModal"
   (closed)="showCreateModal = false"
-  (projectCreated)="onProjectCreated()">
+  (projectCreated)="onProjectCreated()"
+>
 </app-project-create-modal>
