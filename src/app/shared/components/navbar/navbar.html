@@ -1,14 +1,22 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
   <div class="container-fluid">
-
-    <a class="navbar-brand fs-4" [routerLink]="(isLoggedIn$ | async) ? '/project/dashboard' : '/'">
-      TaskFlow
+    <a class="navbar-brand" [routerLink]="(isLoggedIn$ | async) ? '/project/dashboard' : '/'">
+      <div class="brand-content">
+        <img src="assets/logo.png" alt="Logo TaskFlow" class="brand-logo">
+        <span class="brand-text">TaskFlow</span>
+      </div>
     </a>
-
-
+    <button class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
-
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item" *ngIf="isLoggedIn$ | async">
           <a class="nav-link fs-5" routerLink="/project/dashboard" routerLinkActive="active">Dashboard</a>
@@ -16,7 +24,6 @@
       </ul>
 
       <ul class="navbar-nav mb-2 mb-lg-0">
-
         <ng-container *ngIf="!(isLoggedIn$ | async)">
           <li class="nav-item">
             <a class="nav-link fs-5" routerLink="/auth/login" routerLinkActive="active">Login</a>
@@ -33,9 +40,9 @@
             </a>
           </li>
           <li class="nav-item">
-             <button class="nav-link btn btn-link text-light fs-5" (click)="logout()">
-               Cerrar Sesión
-             </button>
+            <button class="nav-link btn btn-link text-light fs-5" (click)="logout()">
+              Cerrar Sesión
+            </button>
           </li>
         </ng-container>
       </ul>
