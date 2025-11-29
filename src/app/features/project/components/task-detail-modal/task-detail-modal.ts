@@ -63,6 +63,12 @@ export class TaskDetailModal implements OnChanges{
     return 'Hace unos segundos';
   }
 
+  onBackdropClick(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      this.close();
+    }
+  }
+
   close(): void {
     this.closed.emit();
   }
@@ -101,4 +107,6 @@ export class TaskDetailModal implements OnChanges{
       this.editedTask.assignedUserId = undefined;
       this.editedTask.assignedUsername = username;
   }
+
+
 }

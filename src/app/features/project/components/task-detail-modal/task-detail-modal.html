@@ -1,6 +1,8 @@
-<div *ngIf="isVisible" class="modal-backdrop" (click)="close()">
-  <div class="modal-dialog" (click)="$event.stopPropagation()">
+<div *ngIf="isVisible" class="modal-backdrop" (click)="onBackdropClick($event)">
+  <div class="modal-dialog fixed-top" (click)="$event.stopPropagation()">
+
     <div class="modal-content-wrapper" *ngIf="task">
+
       <div class="modal-header">
         <div class="breadcrumb">
           <div class="project-icon"></div>
@@ -11,6 +13,7 @@
       </div>
 
       <div class="modal-body-layout">
+
         <div class="main-content">
           <input
             type="text"
@@ -32,53 +35,31 @@
           <div class="section-group mt-4">
             <h5 class="section-label">Archivos adjuntos</h5>
             <div class="attachments-list">
-              <div
-                *ngFor="let url of editedTask.attachments; let i = index"
-                class="attachment-card"
-              >
+              <div *ngFor="let url of editedTask.attachments; let i = index" class="attachment-card">
                 <div class="attachment-thumb">📄</div>
                 <div class="text-truncate" style="font-size: 0.8rem">Adjunto {{ i + 1 }}</div>
-                <button
-                  class="btn btn-danger btn-sm mt-1"
-                  style="font-size: 0.7rem"
-                  (click)="removeAttachment(i)"
-                >
-                  Quitar
-                </button>
+                <button class="btn btn-danger btn-sm mt-1" style="font-size: 0.7rem" (click)="removeAttachment(i)">Quitar</button>
               </div>
 
-              <div
-                class="attachment-card d-flex align-items-center justify-content-center"
-                style="cursor: pointer; border-style: dashed"
-                (click)="addAttachment()"
-              >
+              <div class="attachment-card d-flex align-items-center justify-content-center" style="cursor: pointer; border-style: dashed" (click)="addAttachment()">
                 <span style="font-size: 2rem; color: #ccc">+</span>
               </div>
             </div>
             <div class="input-group mt-2">
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                placeholder="Pegar URL..."
-                [(ngModel)]="newAttachmentUrl"
-              />
+              <input type="text" class="form-control form-control-sm" placeholder="Pegar URL..." [(ngModel)]="newAttachmentUrl">
               <button class="btn btn-sm btn-secondary" (click)="addAttachment()">Añadir</button>
             </div>
           </div>
         </div>
 
         <div class="sidebar">
+
           <div class="sidebar-section">
             <div class="sidebar-group">
               <label class="field-label">ESTADO</label>
-              <select
-                [(ngModel)]="editedTask.status"
-                class="status-select"
-                [attr.value]="editedTask.status"
-              >
+              <select [(ngModel)]="editedTask.status" class="status-select" [attr.value]="editedTask.status">
                 <option value="Pendiente">PENDIENTE</option>
-                <option value="En Análisis">EN ANALISIS</option>
-                <option value="En Desarrollo">EN DESARROLLO</option>
+                <option value="En Análisis">EN ANÁLISIS</option> <option value="En Desarrollo">EN DESARROLLO</option>
                 <option value="En Pruebas">EN PRUEBAS</option>
                 <option value="Finalizado">FINALIZADO</option>
                 <option value="Desestimado">DESESTIMADO</option>
@@ -86,24 +67,8 @@
             </div>
 
             <div class="sidebar-group">
-              <label class="field-label">Responsable</label>
-
-              <select
-                class="form-select sidebar-select"
-                [(ngModel)]="editedTask.assignedUsername"
-                [ngModelOptions]="{ standalone: true }"
-              >
-                <option [ngValue]="null">Sin asignar</option>
-                <option *ngFor="let member of projectMembers" [ngValue]="member">
-                  {{ member }}
-                </option>
-              </select>
               <label class="field-label">PRIORIDAD</label>
-              <select
-                [(ngModel)]="editedTask.priority"
-                class="form-select form-select-sm border-0 bg-transparent fw-bold ps-0"
-                style="color: #172b4d"
-              >
+              <select [(ngModel)]="editedTask.priority" class="form-select form-select-sm border-0 bg-transparent fw-bold ps-0" style="color: #172b4d;">
                 <option value="Alta">Alta</option>
                 <option value="Media">Media</option>
                 <option value="Baja">Baja</option>
@@ -112,24 +77,23 @@
           </div>
 
           <div class="sidebar-section">
-            <label
-              class="field-label mb-3"
-              style="
-                font-size: 0.85rem;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 5px;
-                width: 100%;
-              "
-              >PERSONAS</label
-            >
+            <label class="field-label mb-3" style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding-bottom: 5px; width: 100%;">PERSONAS</label>
 
             <div class="sidebar-group">
               <label class="field-label">Responsable</label>
-              <div class="user-row">
-                <div class="user-avatar">
-                  {{ task.assignedUsername ? task.assignedUsername.charAt(0).toUpperCase() : '?' }}
-                </div>
-                <span class="user-name">{{ task.assignedUsername || 'Sin asignar' }}</span>
+              <div class="d-flex align-items-center gap-2">
+                 <div class="user-avatar">
+                   {{ editedTask.assignedUsername ? editedTask.assignedUsername.charAt(0).toUpperCase() : '?' }}
+                 </div>
+                 <select class="form-select form-select-sm border-0 bg-transparent"
+                         style="box-shadow: none; width: auto; font-weight: 500;"
+                         [(ngModel)]="editedTask.assignedUsername"
+                         [ngModelOptions]="{standalone: true}">
+                    <option [ngValue]="null">Sin asignar</option>
+                    <option *ngFor="let member of projectMembers" [ngValue]="member">
+                      {{ member }}
+                    </option>
+                 </select>
               </div>
             </div>
 
@@ -137,9 +101,7 @@
               <label class="field-label">Informador</label>
               <div class="user-row">
                 <div class="user-avatar" style="background: #eae6ff; color: #403294">
-                  {{
-                    task.createdByUsername ? task.createdByUsername.charAt(0).toUpperCase() : '?'
-                  }}
+                  {{ task.createdByUsername ? task.createdByUsername.charAt(0).toUpperCase() : '?' }}
                 </div>
                 <span class="user-name">{{ task.createdByUsername || 'Sistema' }}</span>
               </div>
@@ -147,16 +109,7 @@
           </div>
 
           <div class="sidebar-section">
-            <label
-              class="field-label mb-3"
-              style="
-                font-size: 0.85rem;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 5px;
-                width: 100%;
-              "
-              >FECHAS</label
-            >
+            <label class="field-label mb-3" style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding-bottom: 5px; width: 100%;">FECHAS</label>
             <div class="sidebar-group">
               <label class="field-label">Creado</label>
               <span class="date-text">{{ getTimeAgo(task.createdAt) }}</span>
@@ -166,7 +119,9 @@
               <span class="date-text">Hace un momento</span>
             </div>
           </div>
+
         </div>
+
       </div>
 
       <div class="modal-footer">
@@ -177,6 +132,7 @@
           {{ isSaving ? 'Guardando...' : 'Guardar' }}
         </button>
       </div>
+
     </div>
   </div>
 </div>
