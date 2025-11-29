@@ -1,4 +1,4 @@
-import { Task } from './../../models/task.model';
+import { Task } from '../../../../shared/models/task.model';
 import { Component, Input,Output, EventEmitter} from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 

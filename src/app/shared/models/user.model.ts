@@ -1,5 +1,10 @@
 export interface User {
-  id: string; // O number
+  id: number;
   username: string;
-  email: string;
+  email?: string;
+}
+
+export interface UserSummary {
+    id: number;
+    username: string;
 }

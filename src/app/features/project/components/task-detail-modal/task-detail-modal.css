@@ -152,23 +152,82 @@
   flex-wrap: wrap;
   gap: 12px;
 }
+.attachment-item-wrapper {
+  position: relative;
+}
 .attachment-card {
+  display: flex;
+  flex-direction: column;
+  width: 130px;
+  height: 110px;
   border: 1px solid #dfe1e6;
-  border-radius: 4px;
-  padding: 8px;
-  width: 140px;
-  text-align: center;
-  background: #fafbfc;
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none; /* Quita subrayado del enlace */
+  color: inherit;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  background: #fff;
+}
+.attachment-card:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-color: #0052cc;
 }
 .attachment-thumb {
-  height: 80px;
-  background: #ebecf0;
-  margin-bottom: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2rem; color: #5e6c84;
-  border-radius: 3px;
+  height: 70px;
+  background-color: #f4f5f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.img-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.attachment-info {
+  padding: 6px 8px;
+  background: white;
+  border-top: 1px solid #eee;
 }
 
+/* Botón Eliminar (X) flotante */
+.btn-remove-attachment {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 22px;
+  height: 22px;
+  background: #ff5630;
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  opacity: 0; /* Oculto por defecto */
+  transition: opacity 0.2s;
+}
+
+.attachment-item-wrapper:hover .btn-remove-attachment {
+  opacity: 1; /* Aparece al pasar el mouse */
+}
+
+/* Tarjeta de Añadir */
+.add-card {
+  align-items: center;
+  justify-content: center;
+  border-style: dashed;
+  background-color: #fafbfc;
+}
+.add-card:hover {
+  background-color: #ebecf0;
+  border-color: #999;
+}
 /* --- Sidebar Styles --- */
 .sidebar-section {
   margin-bottom: 24px;

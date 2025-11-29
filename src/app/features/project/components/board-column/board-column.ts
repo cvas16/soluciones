@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
-import { Task } from '../../models/task.model';
+import { Task } from '../../../../shared/models/task.model';
 import { TaskCard } from '../task-card/task-card';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { TaskCreateModal } from '../task-create-modal/task-create-modal';
@@ -14,7 +14,7 @@ import { TaskCreateModal } from '../task-create-modal/task-create-modal';
 export class BoardColumn {
   @Input() columnTitle: string = '';
   @Input() tasks: Task[] = [];
-  @Input() projectId!: string;
+  @Input() projectId!: number;
   @Output() taskDropped = new EventEmitter<CdkDragDrop<Task[]>>();
   @Output() taskClicked = new EventEmitter<Task>();
   @Output() taskAdded = new EventEmitter<Task>();

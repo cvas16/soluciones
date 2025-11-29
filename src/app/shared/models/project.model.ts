@@ -1,11 +1,11 @@
-
+import { UserSummary } from "./user.model";
 export interface Project {
-  id: string;
+  id: number;
   name: string;
   description?: string;
-  ownerId?: string;
+  ownerId?: number;
   background?: string;
-  members?: string[];
+  members?: UserSummary[];
   taskCount?: number;
   membersCount?: number;
 }

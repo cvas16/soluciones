@@ -33,24 +33,47 @@
           </div>
 
           <div class="section-group mt-4">
-            <h5 class="section-label">Archivos adjuntos</h5>
-            <div class="attachments-list">
-              <div *ngFor="let url of editedTask.attachments; let i = index" class="attachment-card">
-                <div class="attachment-thumb">📄</div>
-                <div class="text-truncate" style="font-size: 0.8rem">Adjunto {{ i + 1 }}</div>
-                <button class="btn btn-danger btn-sm mt-1" style="font-size: 0.7rem" (click)="removeAttachment(i)">Quitar</button>
-              </div>
+            <h5 class="section-label">Archivos y Enlaces</h5>
 
-              <div class="attachment-card d-flex align-items-center justify-content-center" style="cursor: pointer; border-style: dashed" (click)="addAttachment()">
-                <span style="font-size: 2rem; color: #ccc">+</span>
+            <div class="attachments-list">
+              <div *ngFor="let url of editedTask.attachments; let i = index" class="attachment-item-wrapper">
+                <a [href]="url" target="_blank" class="attachment-card" title="{{ url }}">
+                  <div class="attachment-thumb" [ngSwitch]="getAttachmentType(url)">
+                    <img *ngSwitchCase="'image'" [src]="url" class="img-preview">
+                    <span *ngSwitchCase="'video'" style="color: #ff0000; font-size: 1.5rem;">▶</span>
+                    <span *ngSwitchCase="'link'" style="color: #2563eb; font-size: 1.5rem;">🔗</span>
+                    <span *ngSwitchDefault style="font-size: 1.5rem;">📄</span>
+                  </div>
+                  <div class="attachment-info">
+                    <span class="text-truncate d-block fw-bold" style="max-width: 110px; font-size: 0.8rem;">
+                        {{ getAttachmentName(url) }}
+                    </span>
+                    <span class="text-muted" style="font-size: 0.7rem;">
+                        {{ getAttachmentType(url) | uppercase }}
+                    </span>
+                  </div>
+                </a>
+                <button class="btn-remove-attachment" (click)="removeAttachment(i)" title="Quitar">
+                    ×
+                </button>
               </div>
+              <label class="attachment-card add-card" style="cursor: pointer;">
+                 <span style="font-size: 1.5rem; color: #ccc;">+</span>
+                 <span style="font-size: 0.8rem; color: #999;">Subir</span>
+                 <input type="file" (change)="onFileSelected($event)" style="display: none;">
+              </label>
+              <div class="input-group mt-3">
+               <input type="text" class="form-control form-control-sm"
+                      placeholder="Pegar enlace (YouTube, Web...)"
+                      [(ngModel)]="newAttachmentUrl"
+                      (keyup.enter)="addAttachment()">
+               <button class="btn btn-sm btn-outline-secondary" (click)="addAttachment()">
+                 Añadir Link
+               </button>
             </div>
-            <div class="input-group mt-2">
-              <input type="text" class="form-control form-control-sm" placeholder="Pegar URL..." [(ngModel)]="newAttachmentUrl">
-              <button class="btn btn-sm btn-secondary" (click)="addAttachment()">Añadir</button>
             </div>
           </div>
-        </div>
+          </div>
 
         <div class="sidebar">
 
@@ -83,15 +106,14 @@
               <label class="field-label">Responsable</label>
               <div class="d-flex align-items-center gap-2">
                  <div class="user-avatar">
-                   {{ editedTask.assignedUsername ? editedTask.assignedUsername.charAt(0).toUpperCase() : '?' }}
+                   {{ getAssignedUserInitial() }}
                  </div>
                  <select class="form-select form-select-sm border-0 bg-transparent"
-                         style="box-shadow: none; width: auto; font-weight: 500;"
-                         [(ngModel)]="editedTask.assignedUsername"
+                         [(ngModel)]="editedTask.assignedUserId"
                          [ngModelOptions]="{standalone: true}">
                     <option [ngValue]="null">Sin asignar</option>
-                    <option *ngFor="let member of projectMembers" [ngValue]="member">
-                      {{ member }}
+                    <option *ngFor="let member of projectMembers" [ngValue]="member.id">
+                      {{ member.username }}
                     </option>
                  </select>
               </div>

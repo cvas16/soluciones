@@ -1,9 +1,13 @@
-
 export interface Task {
-  id: string;
+  id: number;
   title: string;
   description?: string;
   status: string;
-  projectId: string;
-  assignedUserId?: string;
+  projectId: number;
+  assignedUserId?: number;
+  assignedUsername?: string;
+  priority?: string;
+  createdAt?: string;
+  createdByUsername?: string;
+  attachments?: string[];
 }

@@ -1,6 +1,11 @@
 <div class="profile-page-container">
 
   <h1 class="page-title">Configuración de la Cuenta</h1>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+  <a routerLink="/project/dashboard" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-arrow-left"></i> Volver
+  </a>
+</div>
 
   <app-spinner *ngIf="isLoading" message="Cargando tu perfil..."></app-spinner>
 
@@ -82,7 +87,7 @@
             <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
             <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword"
                    [ngClass]="{ 'is-invalid': isInvalid(passwordForm, 'confirmPassword') || passwordForm.hasError('mismatch') }">
-            <div *ngIf="isInvalid(passwordForm, 'confirmPassword') || passwordForm.hasError('mmismatch')" class="invalid-feedback">
+            <div *ngIf="isInvalid(passwordForm, 'confirmPassword') || passwordForm.hasError('mismatch')" class="invalid-feedback">
               {{ getErrorMessage(passwordForm, 'confirmPassword') }}
             </div>
           </div>

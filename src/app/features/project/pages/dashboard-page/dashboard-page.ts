@@ -2,7 +2,7 @@ import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProjectService } from '../../services/project.service';
-import { Project } from '../../models/project.model';
+import { Project } from '../../../../shared/models/project.model';
 import { Subject, takeUntil } from 'rxjs';
 import { Modal } from '../../../../shared/components/modal/modal';
 import { Spinner } from '../../../../shared/components/spinner/spinner';
@@ -20,9 +20,9 @@ export class DashboardPage implements OnInit, OnDestroy {
   projects: Project[] = [];
   isLoading = true;
   errorMessage: string | null = null;
-  deletingProjectId: string | null = null;
+  deletingProjectId: number | null = null;
   showDeleteModal = false;
-  projectToDeleteId: string | null = null;
+  projectToDeleteId: number | null = null;
   projectToDeleteName: string | null = null;
   showCreateModal= false;
 
@@ -43,7 +43,6 @@ export class DashboardPage implements OnInit, OnDestroy {
     ).subscribe({
       next: (data) => {
         this.projects = data;
-        console.log('Dashboard: loaded projects, sample background:', this.projects?.[0]?.background);
         this.isLoading = false;
       },
       error: (err) => {
@@ -77,9 +76,7 @@ export class DashboardPage implements OnInit, OnDestroy {
 
   onModalConfirm(): void {
     this.showDeleteModal = false;
-
-    if (!this.projectToDeleteId) return;
-
+    if (this.projectToDeleteId === null) return;
     this.deletingProjectId = this.projectToDeleteId;
     const idToDelete = this.projectToDeleteId;
 

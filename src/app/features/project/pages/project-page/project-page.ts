@@ -3,8 +3,8 @@ import { CommonModule, NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { ProjectService } from '../../services/project.service';
-import { Project } from '../../models/project.model';
-import { Task } from '../../models/task.model';
+import { Project } from '../../../../shared/models/project.model';
+import { Task } from '../../../../shared/models/task.model';
 import { BoardColumn } from '../../components/board-column/board-column';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TaskDetailModal } from '../../components/task-detail-modal/task-detail-modal';
@@ -12,17 +12,17 @@ import { InviteMemberModal } from '../../components/invite-member-modal/invite-m
 
 @Component({
   selector: 'app-project-page',
-  standalone:true,
-  imports: [CommonModule, NgIf,BoardColumn,DragDropModule,TaskDetailModal,InviteMemberModal],
+  standalone: true,
+  imports: [CommonModule, NgIf, BoardColumn, DragDropModule, TaskDetailModal, InviteMemberModal],
   templateUrl: './project-page.html',
   styleUrls: ['./project-page.css'],
 })
-export class ProjectPage implements OnInit, OnDestroy{
+export class ProjectPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private document = inject(DOCUMENT);
   private router = inject(Router);
   private projectService = inject(ProjectService);
-  projectId: string | null = null;
+  projectId: number | null = null;
   project: Project | null = null;
 
   columns: { [key: string]: Task[] } = {
@@ -49,20 +49,12 @@ export class ProjectPage implements OnInit, OnDestroy{
   ];
 
   ngOnInit(): void {
-    this.projectId = this.route.snapshot.paramMap.get('id');
-
-    if (!this.projectId) {
-      console.error('No se encontró ID de proyecto en la ruta');
-      this.errorMessage = 'ID de proyecto inválido.';
-      this.isLoading = false;
-      this.router.navigateByUrl('/project/dashboard');
-      return;
-    }
-
+    const idParam = this.route.snapshot.paramMap.get('id');
+    this.projectId = Number(idParam);
     this.loadProjectDetails(this.projectId);
   }
 
-  loadProjectDetails(id: string): void {
+  loadProjectDetails(id: number): void {
     this.isLoading = true;
     this.errorMessage = null;
     this.projectService.getProjectWithTasks(id).subscribe({
@@ -75,7 +67,7 @@ export class ProjectPage implements OnInit, OnDestroy{
           this.document.body.style.backgroundRepeat = 'no-repeat';
           this.document.body.classList.add('has-project-background');
         }
-          console.log('Project loaded, background:', this.project?.background);
+        console.log('Project loaded, background:', this.project?.background);
         this.organizeTasks(data.tasks);
         this.isLoading = false;
       },
@@ -107,7 +99,7 @@ export class ProjectPage implements OnInit, OnDestroy{
     allTasks.forEach(task => {
       const targetColumn = this.columns[task.status] ? task.status : 'Pendiente';
       if (task.status !== targetColumn) {
-          task.status = targetColumn;
+        task.status = targetColumn;
       }
       this.columns[targetColumn].push(task);
     });
@@ -151,7 +143,7 @@ export class ProjectPage implements OnInit, OnDestroy{
       this.loadProjectDetails(this.projectId);
     }
   }
-  onTaskDeleted(taskId: string): void {
+  onTaskDeleted(taskId: number): void {
     if (this.projectId) {
       this.loadProjectDetails(this.projectId);
     }
@@ -165,7 +157,7 @@ export class ProjectPage implements OnInit, OnDestroy{
     task.status = newStatus;
     const targetColumn = this.columns[newStatus] ? newStatus : 'Finalizado';
     if (this.columns[targetColumn]) {
-        this.columns[targetColumn].push(task);
+      this.columns[targetColumn].push(task);
     }
     this.projectService.updateTask(task.id, { status: newStatus }).subscribe({
       next: () => console.log(`Tarea marcada como ${newStatus}`),
@@ -175,7 +167,7 @@ export class ProjectPage implements OnInit, OnDestroy{
     });
   }
   inviteUser(): void {
-   if (!this.project) return;
+    if (!this.project) return;
     this.showInviteModal = true;
   }
 }

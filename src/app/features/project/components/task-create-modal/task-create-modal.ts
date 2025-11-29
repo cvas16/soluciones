@@ -12,7 +12,7 @@ import { Task } from '../../../../shared/models/task.model';
 })
 export class TaskCreateModal implements OnChanges{
   @Input() isVisible = false;
-  @Input() projectId!: string;
+  @Input() projectId!: number;
   @Input() status: string = 'Pendiente';
 
   @Output() closed = new EventEmitter<void>();

@@ -15,7 +15,7 @@ import { debounceTime, switchMap, distinctUntilChanged, catchError } from 'rxjs/
 })
 export class InviteMemberModal implements OnInit, OnDestroy{
   @Input() isVisible = false;
-  @Input() projectId!: string;
+  @Input() projectId!: number;
 
   @Output() closed = new EventEmitter<void>();
   @Output() memberInvited = new EventEmitter<void>();

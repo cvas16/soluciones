@@ -1,8 +1,9 @@
+import { Project } from '../../../shared/models/project.model';
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ProjectService } from './project.service';
 import { environment } from '../../../../environments/environment.development';
-import { Project } from '../models/project.model';
+
 
 describe('ProjectService', () => {
   let service: ProjectService;
@@ -23,7 +24,7 @@ describe('ProjectService', () => {
 
   it('should POST createProject with background', () => {
     const payload = { name: 'Test', description: 'Desc', background: "url('https://example.com/bg.jpg')" } as Partial<Project>;
-    const mockResponse: Project = { id: '1', name: 'Test', description: 'Desc', background: payload.background };
+    const mockResponse: Project = { id: 1, name: 'Test', description: 'Desc', background: payload.background };
 
     service.createProject(payload).subscribe((res) => {
       expect(res).toEqual(mockResponse);
