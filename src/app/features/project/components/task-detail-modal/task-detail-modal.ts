@@ -17,6 +17,7 @@ export class TaskDetailModal implements OnChanges{
   @Input() isVisible = false;
   @Input() task: Task | null = null;
   @Input() projectMembers: UserSummary[] = [];
+  @Input() canAssign = false;
   @Output() closed = new EventEmitter<void>();
   @Output() taskUpdated = new EventEmitter<Task>();
   @Output() taskDeleted = new EventEmitter<number>();

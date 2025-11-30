@@ -67,12 +67,17 @@ export class ProjectService {
     );
   }
 
-  searchUsers(query: string): Observable<User[]> {
-    if (!query.trim()) {
-      return of([]); // Si está vacío, devuelve lista vacía
-    }
-    return this.http.get<User[]>(`${this.apiUrl}/users/search`, {
-      params: { query }
+  searchUsers(query: string, projectId?: number): Observable<User[]> {
+    if (!query.trim()) return of([]);
+    const url = projectId
+        ? `${this.apiUrl}/projects/search-users`
+        : `${this.apiUrl}/users/search`;
+
+    return this.http.get<User[]>(url, {
+      params: {
+          query,
+          projectId: projectId ? projectId.toString() : ''
+      }
     });
   }
 }

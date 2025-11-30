@@ -4,6 +4,7 @@ export interface Project {
   name: string;
   description?: string;
   ownerId?: number;
+  ownerUsername?: string;
   background?: string;
   members?: UserSummary[];
   taskCount?: number;

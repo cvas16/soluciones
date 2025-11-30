@@ -1,3 +1,4 @@
+import { AuthService } from './../../../../core/services/auth.services';
 import { Component, OnInit, inject, OnDestroy } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,6 +19,7 @@ import { InviteMemberModal } from '../../components/invite-member-modal/invite-m
   styleUrls: ['./project-page.css'],
 })
 export class ProjectPage implements OnInit, OnDestroy {
+  private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private document = inject(DOCUMENT);
   private router = inject(Router);
@@ -38,6 +40,7 @@ export class ProjectPage implements OnInit, OnDestroy {
   selectedTask: Task | null = null;
   isTaskModalVisible = false;
   showInviteModal = false;
+  isOwner = false;
 
   boardColumns: string[] = [
     'Pendiente',
@@ -67,6 +70,10 @@ export class ProjectPage implements OnInit, OnDestroy {
           this.document.body.style.backgroundRepeat = 'no-repeat';
           this.document.body.classList.add('has-project-background');
         }
+        const currentUser = this.authService.getCurrentUser();
+        if (currentUser && this.project.ownerId) {
+             this.isOwner = currentUser.id === Number(this.project.ownerId);
+        }
         console.log('Project loaded, background:', this.project?.background);
         this.organizeTasks(data.tasks);
         this.isLoading = false;
@@ -77,6 +84,12 @@ export class ProjectPage implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     });
+  }
+
+  onMemberInvited(): void {
+    if (this.projectId) {
+      this.loadProjectDetails(this.projectId);
+    }
   }
 
   ngOnDestroy(): void {
@@ -155,7 +168,7 @@ export class ProjectPage implements OnInit, OnDestroy {
       this.columns[oldStatus] = this.columns[oldStatus].filter(t => t.id !== task.id);
     }
     task.status = newStatus;
-    const targetColumn = this.columns[newStatus] ? newStatus : 'Finalizado';
+    const targetColumn = this.columns[newStatus] ? newStatus : 'Pendiente';
     if (this.columns[targetColumn]) {
       this.columns[targetColumn].push(task);
     }

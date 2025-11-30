@@ -25,18 +25,23 @@ export class AuthService {
 
   login(credentials: { username: string; password: string }): Observable<LoginResponse> {
 
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials)
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials)
       .pipe(
         tap(response => {
             localStorage.setItem('authToken', response.token);
+            localStorage.setItem('currentUser', JSON.stringify({ id: response.id, username: response.username }));
             this.loggedIn.next(true);
-            console.log('Login exitoso, token guardado');
           }),
         catchError(error => {
           console.error('Error en el login:', error);
           return throwError(() => new Error('Credenciales inválidas'));
         })
       );
+  }
+
+  getCurrentUser(): { id: number, username: string } | null {
+    const userStr = localStorage.getItem('currentUser');
+    return userStr ? JSON.parse(userStr) : null;
   }
 
   logout(): void {

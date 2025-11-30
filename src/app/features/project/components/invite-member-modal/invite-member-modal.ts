@@ -39,7 +39,7 @@ export class InviteMemberModal implements OnInit, OnDestroy{
         if (!query || query.length < 2) {
             return of([]);
         }
-        return this.projectService.searchUsers(query).pipe(
+        return this.projectService.searchUsers(query, Number(this.projectId)).pipe(
             catchError(err => {
                 console.error('Error en autocompletado:', err);
                 return of([]);

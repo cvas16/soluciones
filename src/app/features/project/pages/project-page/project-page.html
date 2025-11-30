@@ -56,11 +56,13 @@
   (taskUpdated)="onTaskUpdated($event)"
   (taskDeleted)="onTaskDeleted($event)"
   [projectMembers]="project?.members || []"
+  [canAssign]="isOwner"
 >
 </app-task-detail-modal>
 <app-invite-member-modal
   [isVisible]="showInviteModal"
   [projectId]="project?.id || 0"
   (closed)="showInviteModal = false"
+  (memberInvited)="onMemberInvited()"
 >
 </app-invite-member-modal>
