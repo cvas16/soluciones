@@ -7,6 +7,7 @@ import { UserSummary } from '../../../../shared/models/user.model';
 import { HttpClient } from '@angular/common/http';
 import { Comment } from '../../../../shared/models/comment.model';
 import { AuthService } from '../../../../core/services/auth.services';
+import { SubTask } from '../../../../shared/models/sub-task.model';
 
 @Component({
   selector: 'app-task-detail-modal',
@@ -15,6 +16,7 @@ import { AuthService } from '../../../../core/services/auth.services';
   templateUrl: './task-detail-modal.html',
   styleUrls: ['./task-detail-modal.css'],
 })
+
 export class TaskDetailModal implements OnChanges{
   @Input() isVisible = false;
   @Input() task: Task | null = null;
@@ -37,14 +39,63 @@ export class TaskDetailModal implements OnChanges{
   isSendingComment = false;
   currentUser = inject(AuthService).getCurrentUser()
 
+  subTasks: SubTask[] = [];
+  newSubTaskTitle = '';
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['task'] && this.task) {
       this.editedTask = { ...this.task };
       this.loadComments();
+      this.loadSubTasks();
     }
     if (changes['projectMembers']) {
       console.log('TaskDetailModal projectMembers changed:', this.projectMembers);
     }
+  }
+
+  loadSubTasks(): void {
+    if (!this.task) return;
+    this.projectService.getSubTasks(this.task.id).subscribe({
+      next: (data) => this.subTasks = data
+    });
+  }
+
+  addSubTask(): void {
+    if (!this.task || !this.newSubTaskTitle.trim()) return;
+    this.projectService.createSubTask(this.task.id, this.newSubTaskTitle).subscribe({
+      next: (subTask) => {
+        this.subTasks.push(subTask);
+        this.newSubTaskTitle = '';
+      },
+      error: (err) => console.error('Error creando sub-tarea', err)
+    });
+  }
+
+  toggleSubTask(subTask: SubTask): void {
+    const newStatus = !subTask.completed;
+
+    subTask.completed = newStatus;
+
+    this.projectService.updateSubTask(subTask.id, { completed: newStatus }).subscribe({
+      error: () => {
+        subTask.completed = !newStatus;
+        alert('Error al actualizar sub-tarea');
+      }
+    });
+  }
+
+  deleteSubTaskItem(subTaskId: number): void {
+    this.projectService.deleteSubTask(subTaskId).subscribe({
+      next: () => {
+        this.subTasks = this.subTasks.filter(st => st.id !== subTaskId);
+      }
+    });
+  }
+
+  getProgress(): number {
+    if (this.subTasks.length === 0) return 0;
+    const completed = this.subTasks.filter(t => t.completed).length;
+    return Math.round((completed / this.subTasks.length) * 100);
   }
 
   loadComments(): void {

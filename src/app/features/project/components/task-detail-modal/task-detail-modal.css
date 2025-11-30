@@ -292,6 +292,7 @@
 }
 
 .user-avatar {
+  min-width: 32px;
   width: 32px; height: 32px;
   border-radius: 50%;
   background: #deebff;
@@ -364,21 +365,42 @@
   color: #dc3545;
 }
 
-.user-avatar {
-  /* Asegúrate que este estilo ya exista o adáptalo */
-  min-width: 32px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #dfe1e6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 0.85rem;
-}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+.subtask-item {
+  padding: 6px 8px;
+  border-radius: 4px;
+  transition: background 0.1s;
+}
+
+.subtask-item:hover {
+  background-color: #f4f5f7;
+}
+
+.subtask-item .form-check-input {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.btn-remove-subtask {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  visibility: hidden; /* Oculto por defecto */
+}
+
+.subtask-item:hover .btn-remove-subtask {
+  visibility: visible; /* Visible al pasar el mouse */
+}
+
+.btn-remove-subtask:hover {
+  color: #dc3545;
 }

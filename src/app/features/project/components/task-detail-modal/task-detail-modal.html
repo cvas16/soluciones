@@ -79,8 +79,52 @@
               </div>
             </div>
           </div>
+          <div class="section-group mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+               <h5 class="section-label mb-0">Checklist</h5>
+               <span class="text-muted small" *ngIf="subTasks.length > 0">
+                 {{ getProgress() }}% completado
+               </span>
+            </div>
 
-          <!-- SECCIÓN DE ACTIVIDAD MOVIDA AQUÍ -->
+            <div class="progress mb-3" style="height: 6px;" *ngIf="subTasks.length > 0">
+              <div class="progress-bar bg-success"
+                   role="progressbar"
+                   [style.width.%]="getProgress()">
+              </div>
+            </div>
+
+            <div class="subtasks-list">
+              <div *ngFor="let sub of subTasks" class="subtask-item d-flex align-items-center gap-2 mb-2">
+
+                <input type="checkbox"
+                       class="form-check-input mt-0"
+                       [checked]="sub.completed"
+                       (change)="toggleSubTask(sub)"
+                       style="cursor: pointer;">
+
+                <span class="flex-grow-1"
+                      [class.text-decoration-line-through]="sub.completed"
+                      [class.text-muted]="sub.completed">
+                  {{ sub.title }}
+                </span>
+
+                <button class="btn-remove-subtask" (click)="deleteSubTaskItem(sub.id)">×</button>
+              </div>
+            </div>
+
+            <div class="mt-2">
+               <input type="text"
+                      class="form-control form-control-sm"
+                      placeholder="Añadir un elemento..."
+                      [(ngModel)]="newSubTaskTitle"
+                      (keyup.enter)="addSubTask()">
+               <div class="mt-2" *ngIf="newSubTaskTitle">
+                  <button class="btn btn-sm btn-primary me-2" (click)="addSubTask()">Añadir</button>
+                  <button class="btn btn-sm btn-light" (click)="newSubTaskTitle = ''">Cancelar</button>
+               </div>
+            </div>
+          </div>
           <div class="section-group mt-5 pt-3 border-top">
             <h5 class="section-label mb-3">Actividad</h5>
 

@@ -6,6 +6,7 @@ import { Project } from '../../../shared/models/project.model';
 import { Task } from '../../../shared/models/task.model';
 import { User } from '../../../shared/models/user.model';
 import { Comment } from '../../../shared/models/comment.model';
+import { SubTask } from '../../../shared/models/sub-task.model';
 
 interface ProjectDetailsResponse {
   project: Project;
@@ -91,5 +92,21 @@ export class ProjectService {
 
   deleteComment(commentId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/comments/${commentId}`);
+  }
+
+  getSubTasks(taskId: number): Observable<SubTask[]> {
+    return this.http.get<SubTask[]>(`${this.apiUrl}/tasks/${taskId}/subtasks`);
+  }
+
+  createSubTask(taskId: number, title: string): Observable<SubTask> {
+    return this.http.post<SubTask>(`${this.apiUrl}/tasks/${taskId}/subtasks`, { title });
+  }
+
+  updateSubTask(subTaskId: number, updates: Partial<SubTask>): Observable<SubTask> {
+    return this.http.put<SubTask>(`${this.apiUrl}/subtasks/${subTaskId}`, updates);
+  }
+
+  deleteSubTask(subTaskId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/subtasks/${subTaskId}`);
   }
 }
