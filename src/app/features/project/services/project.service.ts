@@ -5,6 +5,7 @@ import { environment } from '../../../../environments/environment.development';
 import { Project } from '../../../shared/models/project.model';
 import { Task } from '../../../shared/models/task.model';
 import { User } from '../../../shared/models/user.model';
+import { Comment } from '../../../shared/models/comment.model';
 
 interface ProjectDetailsResponse {
   project: Project;
@@ -79,5 +80,16 @@ export class ProjectService {
           projectId: projectId ? projectId.toString() : ''
       }
     });
+  }
+  getComments(taskId: number): Observable<Comment[]> {
+    return this.http.get<Comment[]>(`${this.apiUrl}/tasks/${taskId}/comments`);
+  }
+
+  addComment(taskId: number, text: string): Observable<Comment> {
+    return this.http.post<Comment>(`${this.apiUrl}/tasks/${taskId}/comments`, { text });
+  }
+
+  deleteComment(commentId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/comments/${commentId}`);
   }
 }

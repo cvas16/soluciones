@@ -79,6 +79,58 @@
               </div>
             </div>
           </div>
+
+          <!-- SECCIÓN DE ACTIVIDAD MOVIDA AQUÍ -->
+          <div class="section-group mt-5 pt-3 border-top">
+            <h5 class="section-label mb-3">Actividad</h5>
+
+            <div class="comments-list mb-4">
+              <div *ngFor="let comment of comments" class="comment-item d-flex gap-3 mb-3">
+                <div class="user-avatar mt-1">
+                  {{ comment.authorUsername.charAt(0).toUpperCase() }}
+                </div>
+
+                <div class="comment-content w-100">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">
+                      {{ comment.authorUsername }}
+                    </span>
+                    <span class="text-muted" style="font-size: 0.75rem;">
+                      {{ getTimeAgo(comment.createdAt) }}
+                    </span>
+                  </div>
+
+                  <div class="comment-text p-2 bg-light rounded">
+                    {{ comment.text }}
+                  </div>
+
+                  <div *ngIf="currentUser?.id === comment.authorId" class="mt-1">
+                    <button class="btn-link-danger" (click)="deleteComment(comment.id)">Eliminar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="new-comment-area d-flex gap-3">
+              <div class="user-avatar" style="background: #0052cc; color: white;">
+                {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'YO' }}
+              </div>
+              <div class="w-100">
+                <textarea
+                  class="form-control mb-2"
+                  rows="2"
+                  placeholder="Escribe un comentario..."
+                  [(ngModel)]="newCommentText"
+                  [disabled]="isSendingComment">
+                </textarea>
+                <button class="btn btn-primary btn-sm"
+                        (click)="sendComment()"
+                        [disabled]="!newCommentText.trim() || isSendingComment">
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="sidebar">

@@ -5,6 +5,8 @@ import { Task } from '../../../../shared/models/task.model';
 import { ProjectService } from '../../services/project.service';
 import { UserSummary } from '../../../../shared/models/user.model';
 import { HttpClient } from '@angular/common/http';
+import { Comment } from '../../../../shared/models/comment.model';
+import { AuthService } from '../../../../core/services/auth.services';
 
 @Component({
   selector: 'app-task-detail-modal',
@@ -30,13 +32,54 @@ export class TaskDetailModal implements OnChanges{
   editedTask: Partial<Task> = {};
   isSaving = false;
 
+  comments: Comment[] = [];
+  newCommentText: string = '';
+  isSendingComment = false;
+  currentUser = inject(AuthService).getCurrentUser()
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['task'] && this.task) {
       this.editedTask = { ...this.task };
+      this.loadComments();
     }
     if (changes['projectMembers']) {
       console.log('TaskDetailModal projectMembers changed:', this.projectMembers);
     }
+  }
+
+  loadComments(): void {
+    if (!this.task) return;
+    this.projectService.getComments(this.task.id).subscribe({
+      next: (data) => this.comments = data,
+      error: (err) => console.error('Error cargando comentarios', err)
+    });
+  }
+
+  sendComment(): void {
+    if (!this.task || !this.newCommentText.trim()) return;
+
+    this.isSendingComment = true;
+    this.projectService.addComment(this.task.id, this.newCommentText).subscribe({
+      next: (comment) => {
+        this.comments.push(comment);
+        this.newCommentText = '';
+        this.isSendingComment = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.isSendingComment = false;
+      }
+    });
+  }
+
+  deleteComment(commentId: number): void {
+    if (!confirm('¿Eliminar comentario?')) return;
+
+    this.projectService.deleteComment(commentId).subscribe({
+      next: () => {
+        this.comments = this.comments.filter(c => c.id !== commentId);
+      }
+    });
   }
 
   getAssignedUserInitial(): string {
