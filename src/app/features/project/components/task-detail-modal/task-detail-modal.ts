@@ -34,13 +34,20 @@ export class TaskDetailModal implements OnChanges{
     if (changes['task'] && this.task) {
       this.editedTask = { ...this.task };
     }
+    if (changes['projectMembers']) {
+      console.log('TaskDetailModal projectMembers changed:', this.projectMembers);
+    }
   }
 
   getAssignedUserInitial(): string {
     if (this.editedTask.assignedUserId) {
-      const user = this.projectMembers.find(m => m.id === this.editedTask.assignedUserId);
+      const user = this.projectMembers.find(m => {
+        if (typeof m === 'object') return (m as UserSummary).id === this.editedTask.assignedUserId;
+        return m === this.editedTask.assignedUserId;
+      });
       if (user) {
-        return user.username.charAt(0).toUpperCase();
+        if (typeof user === 'object') return (user as UserSummary).username.charAt(0).toUpperCase();
+        return (user as string).charAt(0).toUpperCase();
       }
     }
     return '?';

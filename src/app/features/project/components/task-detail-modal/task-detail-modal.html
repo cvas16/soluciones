@@ -138,6 +138,9 @@
                   [disabled]="!canAssign"
                 >
                   <option [ngValue]="null">Sin asignar</option>
+                  <option *ngFor="let member of projectMembers" [ngValue]="member?.id ?? member">
+                    {{ member?.username ?? member }}
+                  </option>
                 </select>
                 <small *ngIf="!canAssign" class="text-muted d-block mt-1" style="font-size: 0.7rem">
                   Solo el dueño puede asignar.

@@ -14,7 +14,6 @@ export class TaskCreateModal implements OnChanges{
   @Input() isVisible = false;
   @Input() projectId!: number;
   @Input() status: string = 'Pendiente';
-
   @Output() closed = new EventEmitter<void>();
   @Output() taskCreated = new EventEmitter<Task>();
 

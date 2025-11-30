@@ -63,6 +63,7 @@ export class ProjectPage implements OnInit, OnDestroy {
     this.projectService.getProjectWithTasks(id).subscribe({
       next: (data) => {
         this.project = data.project;
+        console.log('Project members:', this.project?.members);
         if (this.project?.background) {
           this.document.body.style.background = this.project.background;
           this.document.body.style.backgroundSize = 'cover';
