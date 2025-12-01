@@ -6,6 +6,9 @@ import { environment } from '../../../environments/environment.development';
 
 interface LoginResponse {
   token: string;
+  id: number;
+  username: string;
+  roles: string[];
 }
 
 @Injectable({providedIn: 'root'})
@@ -29,7 +32,12 @@ export class AuthService {
       .pipe(
         tap(response => {
             localStorage.setItem('authToken', response.token);
-            localStorage.setItem('currentUser', JSON.stringify({ id: response.id, username: response.username }));
+            const user = {
+            id: response.id,
+            username: response.username,
+            roles: response.roles // <--- Guardar roles
+        };
+            localStorage.setItem('currentUser', JSON.stringify({user}));
             this.loggedIn.next(true);
           }),
         catchError(error => {
@@ -39,9 +47,14 @@ export class AuthService {
       );
   }
 
-  getCurrentUser(): { id: number, username: string } | null {
+  getCurrentUser(): { id: number, username: string, roles: string[] } | null {
     const userStr = localStorage.getItem('currentUser');
     return userStr ? JSON.parse(userStr) : null;
+  }
+
+  hasRole(role: string): boolean {
+      const user = this.getCurrentUser();
+      return user ? user.roles.includes(role) : false;
   }
 
   logout(): void {

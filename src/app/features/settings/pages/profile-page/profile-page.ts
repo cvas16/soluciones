@@ -1,18 +1,24 @@
-import { FormBuilder ,FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
-import { Component,OnInit,inject } from '@angular/core';
-import { CommonModule} from '@angular/common';
-import { UserProfile } from '../../services/user-profile';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Spinner } from '../../../../shared/components/spinner/spinner';
+import { AuthService } from '../../../../core/services/auth.services';
+import { UserProfile } from '../../services/user-profile';
+
 @Component({
   selector: 'app-profile-page',
-  imports: [CommonModule,ReactiveFormsModule,Spinner],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, Spinner],
   templateUrl: './profile-page.html',
   styleUrls: ['./profile-page.css'],
 })
 export class ProfilePage implements OnInit {
   private fb = inject(FormBuilder);
+  // Asegúrate de inyectar la clase correcta
   private userProfileService = inject(UserProfile);
+  private authService = inject(AuthService);
 
+  currentUserRole: string = '';
   profileForm!: FormGroup;
   passwordForm!: FormGroup;
 
@@ -26,7 +32,6 @@ export class ProfilePage implements OnInit {
   passwordSuccess: string | null = null;
 
   ngOnInit(): void {
-    // Inicializa los formularios
     this.profileForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]]
@@ -36,9 +41,19 @@ export class ProfilePage implements OnInit {
       currentPassword: ['', Validators.required],
       newPassword: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
-    }, { validator: this.passwordMatchValidator });
+    }, { validators: this.passwordMatchValidator });
 
     this.loadUserProfile();
+
+    // Cargar Rol
+    const user = this.authService.getCurrentUser();
+    if (user && user.roles) {
+        if (user.roles.includes('ROLE_ADMIN')) {
+            this.currentUserRole = 'ADMIN';
+        } else if (user.roles.length > 0) {
+            this.currentUserRole = user.roles[0].replace('ROLE_', '');
+        }
+    }
   }
 
   passwordMatchValidator(form: FormGroup) {
@@ -109,18 +124,23 @@ export class ProfilePage implements OnInit {
     });
   }
 
-  isInvalid(form: FormGroup, field: string): boolean | null {
+  isInvalid(form: FormGroup, field: string): boolean {
     const control = form.get(field);
-    return control && control.errors && (control.dirty || control.touched);
+    return !!(control && control.errors && (control.dirty || control.touched));
   }
 
   getErrorMessage(form: FormGroup, field: string): string {
     const control = form.get(field);
-    if (!control || !control.errors) return '';
+    if (!control) return '';
+
     if (control.hasError('required')) return 'Este campo es requerido.';
-    if (control.hasError('minlength')) return `Debe tener al menos ${control.errors['minlength'].requiredLength} caracteres.`;
+    if (control.hasError('minlength')) return `Mínimo ${control.errors?.['minlength'].requiredLength} caracteres.`;
     if (control.hasError('email')) return 'Email no válido.';
-    if (form.hasError('mismatch') && (field === 'confirmPassword')) return 'Las contraseñas no coinciden.';
+
+    if (field === 'confirmPassword' && form.hasError('mismatch')) {
+        return 'Las contraseñas no coinciden.';
+    }
+
     return 'Campo inválido.';
   }
 }

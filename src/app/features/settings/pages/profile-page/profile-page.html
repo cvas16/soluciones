@@ -1,35 +1,36 @@
 <div class="profile-page-container">
 
-  <h1 class="page-title">Configuración de la Cuenta</h1>
   <div class="d-flex justify-content-between align-items-center mb-4">
-  <a routerLink="/project/dashboard" class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-arrow-left"></i> Volver
-  </a>
-</div>
+    <h1 class="page-title mb-0">Configuración de la Cuenta</h1>
+    <a routerLink="/project/dashboard" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-arrow-left"></i> Volver
+    </a>
+  </div>
 
   <app-spinner *ngIf="isLoading" message="Cargando tu perfil..."></app-spinner>
 
   <div *ngIf="!isLoading" class="forms-wrapper">
 
-    <div class="card settings-card">
+    <div class="card settings-card mb-4">
       <div class="card-body">
-        <h5 class="card-title">Información de Perfil</h5>
-        <p class="card-subtitle">Actualiza tu nombre de usuario y email.</p>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+           <h5 class="card-title mb-0">Información de Perfil</h5>
+           <span class="badge rounded-pill" [ngClass]="currentUserRole === 'ADMIN' ? 'bg-danger' : 'bg-primary'">
+             {{ currentUserRole || 'USER' }}
+           </span>
+        </div>
+        <p class="card-subtitle mb-3 text-muted">Actualiza tu nombre de usuario y email.</p>
 
         <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" novalidate>
 
-          <div *ngIf="profileSuccess" class="alert alert-success">
-            {{ profileSuccess }}
-          </div>
-          <div *ngIf="profileError" class="alert alert-danger">
-            {{ profileError }}
-          </div>
+          <div *ngIf="profileSuccess" class="alert alert-success">{{ profileSuccess }}</div>
+          <div *ngIf="profileError" class="alert alert-danger">{{ profileError }}</div>
 
           <div class="mb-3">
             <label for="username" class="form-label">Usuario</label>
             <input type="text" id="username" class="form-control" formControlName="username"
-                   [ngClass]="{ 'is-invalid': isInvalid(profileForm, 'username') }">
-            <div *ngIf="isInvalid(profileForm, 'username')" class="invalid-feedback">
+                   [class.is-invalid]="isInvalid(profileForm, 'username')">
+            <div class="invalid-feedback">
               {{ getErrorMessage(profileForm, 'username') }}
             </div>
           </div>
@@ -37,16 +38,15 @@
           <div class="mb-3">
             <label for="email" class="form-label">Email</label>
             <input type="email" id="email" class="form-control" formControlName="email"
-                   [ngClass]="{ 'is-invalid': isInvalid(profileForm, 'email') }">
-            <div *ngIf="isInvalid(profileForm, 'email')" class="invalid-feedback">
+                   [class.is-invalid]="isInvalid(profileForm, 'email')">
+            <div class="invalid-feedback">
               {{ getErrorMessage(profileForm, 'email') }}
             </div>
           </div>
 
           <button type="submit" class="btn btn-primary" [disabled]="isSavingProfile">
-            <span *ngIf="!isSavingProfile">Guardar Cambios</span>
-            <span *ngIf="isSavingProfile" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            <span *ngIf="isSavingProfile"> Guardando...</span>
+            <span *ngIf="isSavingProfile" class="spinner-border spinner-border-sm me-1"></span>
+            {{ isSavingProfile ? 'Guardando...' : 'Guardar Cambios' }}
           </button>
         </form>
       </div>
@@ -54,22 +54,18 @@
 
     <div class="card settings-card">
       <div class="card-body">
-        <h5 class="card-title">Cambiar Contraseña</h5>
+        <h5 class="card-title mb-3">Cambiar Contraseña</h5>
 
         <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" novalidate>
 
-          <div *ngIf="passwordSuccess" class="alert alert-success">
-            {{ passwordSuccess }}
-          </div>
-          <div *ngIf="passwordError" class="alert alert-danger">
-            {{ passwordError }}
-          </div>
+          <div *ngIf="passwordSuccess" class="alert alert-success">{{ passwordSuccess }}</div>
+          <div *ngIf="passwordError" class="alert alert-danger">{{ passwordError }}</div>
 
           <div class="mb-3">
             <label for="currentPassword" class="form-label">Contraseña Actual</label>
             <input type="password" id="currentPassword" class="form-control" formControlName="currentPassword"
-                   [ngClass]="{ 'is-invalid': isInvalid(passwordForm, 'currentPassword') }">
-            <div *ngIf="isInvalid(passwordForm, 'currentPassword')" class="invalid-feedback">
+                   [class.is-invalid]="isInvalid(passwordForm, 'currentPassword')">
+            <div class="invalid-feedback">
               {{ getErrorMessage(passwordForm, 'currentPassword') }}
             </div>
           </div>
@@ -77,8 +73,8 @@
           <div class="mb-3">
             <label for="newPassword" class="form-label">Nueva Contraseña</label>
             <input type="password" id="newPassword" class="form-control" formControlName="newPassword"
-                   [ngClass]="{ 'is-invalid': isInvalid(passwordForm, 'newPassword') }">
-            <div *ngIf="isInvalid(passwordForm, 'newPassword')" class="invalid-feedback">
+                   [class.is-invalid]="isInvalid(passwordForm, 'newPassword')">
+            <div class="invalid-feedback">
               {{ getErrorMessage(passwordForm, 'newPassword') }}
             </div>
           </div>
@@ -86,16 +82,19 @@
           <div class="mb-3">
             <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
             <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword"
-                   [ngClass]="{ 'is-invalid': isInvalid(passwordForm, 'confirmPassword') || passwordForm.hasError('mismatch') }">
-            <div *ngIf="isInvalid(passwordForm, 'confirmPassword') || passwordForm.hasError('mismatch')" class="invalid-feedback">
-              {{ getErrorMessage(passwordForm, 'confirmPassword') }}
+                   [class.is-invalid]="isInvalid(passwordForm, 'confirmPassword') || (passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched)">
+
+            <div *ngIf="isInvalid(passwordForm, 'confirmPassword')" class="invalid-feedback">
+               {{ getErrorMessage(passwordForm, 'confirmPassword') }}
+            </div>
+            <div *ngIf="passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched && !passwordForm.get('confirmPassword')?.errors" class="invalid-feedback d-block">
+               Las contraseñas no coinciden.
             </div>
           </div>
 
           <button type="submit" class="btn btn-primary" [disabled]="isSavingPassword">
-            <span *ngIf="!isSavingPassword">Cambiar Contraseña</span>
-            <span *ngIf="isSavingPassword" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            <span *ngIf="isSavingPassword"> Guardando...</span>
+            <span *ngIf="isSavingPassword" class="spinner-border spinner-border-sm me-1"></span>
+            {{ isSavingPassword ? 'Guardando...' : 'Cambiar Contraseña' }}
           </button>
         </form>
       </div>
