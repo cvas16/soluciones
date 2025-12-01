@@ -1,11 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
   <div class="container-fluid">
+
     <a class="navbar-brand" [routerLink]="(isLoggedIn$ | async) ? '/project/dashboard' : '/'">
       <div class="brand-content">
         <img src="assets/logo.png" alt="Logo TaskFlow" class="brand-logo">
         <span class="brand-text">TaskFlow</span>
       </div>
     </a>
+
     <button class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
@@ -17,14 +19,14 @@
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
+
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item" *ngIf="isLoggedIn$ | async">
           <a class="nav-link fs-5" routerLink="/project/dashboard" routerLinkActive="active">Dashboard</a>
         </li>
       </ul>
 
-      <ul class="navbar-nav mb-2 mb-lg-0">
-        <ng-container *ngIf="!(isLoggedIn$ | async)">
+      <ul class="navbar-nav mb-2 mb-lg-0 align-items-center"> <ng-container *ngIf="!(isLoggedIn$ | async)">
           <li class="nav-item">
             <a class="nav-link fs-5" routerLink="/auth/login" routerLinkActive="active">Login</a>
           </li>
@@ -34,6 +36,63 @@
         </ng-container>
 
         <ng-container *ngIf="isLoggedIn$ | async">
+
+          <li class="nav-item dropdown-wrapper me-3">
+             <button class="nav-link btn btn-link position-relative text-light border-0 bg-transparent"
+                     (click)="toggleNotifications($event)"
+                     style="padding: 8px;">
+
+                <i class="bi" [ngClass]="unreadCount > 0 ? 'bi-bell-fill' : 'bi-bell'" style="font-size: 1.3rem;"></i>
+
+                <span *ngIf="unreadCount > 0"
+                      class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                      style="font-size: 0.6rem;">
+                   {{ unreadCount > 9 ? '9+' : unreadCount }}
+                </span>
+             </button>
+
+             <div class="notification-dropdown shadow-lg" *ngIf="showNotifications" (click)="$event.stopPropagation()">
+
+                <div class="dropdown-header d-flex justify-content-between align-items-center p-2 border-bottom">
+                   <span class="fw-bold small text-dark">Notificaciones</span>
+                   <button class="btn btn-link btn-sm p-0 text-decoration-none"
+                           style="font-size: 0.75rem;"
+                           (click)="markAllRead()"
+                           *ngIf="unreadCount > 0">
+                     Marcar leídas
+                   </button>
+                </div>
+
+                <div class="notification-list">
+                   <div *ngIf="notifications.length === 0" class="text-center text-muted p-3 small">
+                      Sin notificaciones nuevas
+                   </div>
+
+                   <div *ngFor="let notif of notifications"
+                        class="notification-item p-2 border-bottom"
+                        [class.unread]="!notif.isRead"
+                        (click)="markAsRead(notif)">
+
+                      <div class="d-flex gap-2 text-start">
+                         <div class="notif-icon mt-1">
+                            <i class="bi bi-person-plus-fill text-primary" *ngIf="notif.type === 'ASSIGNMENT'"></i>
+                            <i class="bi bi-envelope-fill text-warning" *ngIf="notif.type === 'INVITE'"></i>
+                            <i class="bi bi-info-circle-fill text-secondary" *ngIf="!['ASSIGNMENT','INVITE'].includes(notif.type)"></i>
+                         </div>
+
+                         <div class="w-100">
+                            <p class="mb-0 small text-wrap text-dark" style="line-height: 1.3;">{{ notif.message }}</p>
+                            <span class="text-muted" style="font-size: 0.65rem;">Hace un momento</span>
+                         </div>
+
+                         <span class="ms-auto p-1 bg-primary rounded-circle d-inline-block align-self-center flex-shrink-0"
+                               style="width: 8px; height: 8px;"
+                               *ngIf="!notif.isRead"></span>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </li>
           <li class="nav-item">
             <a class="nav-link fs-5" routerLink="/settings/profile" routerLinkActive="active">
               Mi Perfil
@@ -45,6 +104,7 @@
             </button>
           </li>
         </ng-container>
+
       </ul>
     </div>
   </div>

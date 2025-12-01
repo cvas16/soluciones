@@ -329,3 +329,64 @@
 .navbar {
   animation: slideDown 0.3s ease;
 }
+.dropdown-wrapper {
+  position: relative;
+}
+
+/* El menú flotante */
+.notification-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 300px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  z-index: 1050;
+  margin-top: 10px;
+  color: #172b4d; /* Texto oscuro para el contenido */
+  animation: slideDown 0.2s ease-out;
+}
+
+/* Flechita arriba del menú (opcional, estilo popover) */
+.notification-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 16px;
+  width: 12px;
+  height: 12px;
+  background: white;
+  transform: rotate(45deg);
+  border-top: 1px solid #e9ecef;
+  border-left: 1px solid #e9ecef;
+}
+
+.notification-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.notification-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Estilo para no leídas */
+.notification-item.unread {
+  background-color: #e8f2ff; /* Azul muy suave */
+}
+
+.notif-icon {
+  font-size: 1.2rem;
+}
+
+/* Animación */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
