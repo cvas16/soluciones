@@ -1,5 +1,7 @@
+import { ADMIN_ROUTES } from './features/project/admin.routes';
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+
 export const routes: Routes = [
   // Redirección Principal
   {
@@ -21,7 +23,13 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'admin',
+    loadChildren: () => import('./features/project/admin.routes').then(r => r.ADMIN_ROUTES),
+    canActivate: [authGuard]
+  },
+  {
     path: '**',
     redirectTo: ''
   }
+
 ];

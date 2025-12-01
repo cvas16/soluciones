@@ -52,13 +52,22 @@ export class LoginPage implements OnInit, OnDestroy{
       next: (response) => {
         console.log('Login exitoso:', response);
         this.isLoading = false;
-        this.router.navigateByUrl('/project');
+        this.router.navigateByUrl('/project/dashboard');
       },
       error: (error) => {
         console.error('Error en el login:', error);
         this.isLoading = false;
-        this.errorMessage = error.message || 'Error al iniciar sesión. Verifica tus credenciales.';
-        this.loginForm.reset();
+        if (error.error && error.error.error) {
+            this.errorMessage = error.error.error;
+        }
+        else if (typeof error.error === 'string') {
+            this.errorMessage = error.error;
+        }
+        else {
+            this.errorMessage = 'Error al iniciar sesión. Verifica tus credenciales.';
+        }
+
+        this.loginForm.get('password')?.reset();
       }
     });
   }

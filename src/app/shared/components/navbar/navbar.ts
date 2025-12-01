@@ -84,4 +84,8 @@ export class Navbar implements OnInit {
   closeNotifications() {
     this.showNotifications = false;
   }
+  get isAdmin(): boolean {
+    const user = this.authService.getCurrentUser();
+    return user?.roles?.includes('ROLE_ADMIN') || false;
+  }
 }
