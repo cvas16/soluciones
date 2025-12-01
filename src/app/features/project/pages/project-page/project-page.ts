@@ -84,9 +84,12 @@ export class ProjectPage implements OnInit, OnDestroy {
           this.document.body.style.backgroundRepeat = 'no-repeat';
           this.document.body.classList.add('has-project-background');
         }
-        const currentUser = this.authService.getCurrentUser();
-        if (currentUser && this.project.ownerId) {
-             this.isOwner = currentUser.id === Number(this.project.ownerId);
+        const currentUserData: any = this.authService.getCurrentUser();
+
+        const currentUserId = currentUserData?.id || currentUserData?.user?.id;
+
+        if (currentUserId && this.project.ownerId) {
+             this.isOwner = Number(currentUserId) === Number(this.project.ownerId);
         }
         console.log('Project loaded, background:', this.project?.background);
         this.organizeTasks(data.tasks);

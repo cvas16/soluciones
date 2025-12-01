@@ -32,19 +32,21 @@ export class AuthService {
       .pipe(
         tap(response => {
             localStorage.setItem('authToken', response.token);
-            const user = {
+            const userToSave = {
             id: response.id,
             username: response.username,
-            roles: response.roles // <--- Guardar roles
+            roles: response.roles
         };
-            localStorage.setItem('currentUser', JSON.stringify({user}));
-            this.loggedIn.next(true);
-          }),
-        catchError(error => {
-          console.error('Error en el login:', error);
-          return throwError(() => new Error('Credenciales inválidas'));
-        })
-      );
+            console.log('Guardando usuario en LS:', userToSave);
+
+        localStorage.setItem('currentUser', JSON.stringify(userToSave));
+        this.loggedIn.next(true);
+      }),
+      catchError(error => {
+        console.error('Error en login:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   getCurrentUser(): { id: number, username: string, roles: string[] } | null {

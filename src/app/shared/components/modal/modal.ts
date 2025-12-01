@@ -1,55 +1,34 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-modal',
   standalone: true,
-  imports: [CommonModule, NgIf],
+  imports: [CommonModule],
   templateUrl: './modal.html',
   styleUrls: ['./modal.css']
 })
 export class Modal {
-
-
-  @Input() isVisible: boolean = false;
-
-
-  @Input() title: string = 'Confirmación';
-
-
-  @Input() confirmType: 'primary' | 'danger' = 'primary';
-
-
-  @Output() confirmed = new EventEmitter<void>();
-
+  @Input() isVisible = false;
+  @Input() title = 'Confirmación';
+  @Input() confirmType: 'danger' | 'primary' = 'primary';
 
   @Output() closed = new EventEmitter<void>();
+  @Output() confirmed = new EventEmitter<void>();
 
-
-  onBackdropClick(): void {
-    this.closed.emit(); // Emite el evento para cerrar
+  get confirmButtonClass(): string {
+    return this.confirmType === 'danger' ? 'btn-danger' : 'btn-primary';
   }
 
-
-  onModalClick(event: MouseEvent): void {
-    event.stopPropagation();
+  onBackdropClick() {
+    this.close();
   }
 
-
-  onConfirm(): void {
-    this.confirmed.emit();
-  }
-
-
-  onClose(): void {
+  close() {
     this.closed.emit();
   }
 
-
-  getConfirmButtonClass(): string {
-    if (this.confirmType === 'danger') {
-      return 'btn btn-danger'; // Botón rojo
-    }
-    return 'btn btn-primary'; // Botón azul por defecto
+  confirm() {
+    this.confirmed.emit();
   }
 }
