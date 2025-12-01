@@ -7,6 +7,8 @@ import { Task } from '../../../shared/models/task.model';
 import { User } from '../../../shared/models/user.model';
 import { Comment } from '../../../shared/models/comment.model';
 import { SubTask } from '../../../shared/models/sub-task.model';
+import { Dependency } from '../../../shared/models/dependency.model';
+import { Tag } from '../../../shared/models/tag.model';
 
 interface ProjectDetailsResponse {
   project: Project;
@@ -20,7 +22,7 @@ export class ProjectService {
 
   private apiUrl = environment.apiUrl;
   private http = inject(HttpClient);
-
+  /*Proyecto*/
   getProjects(): Observable<Project[]> {
     return this.http.get<Project[]>(`${this.apiUrl}/projects`);
   }
@@ -37,7 +39,7 @@ export class ProjectService {
     return this.http.get<Project>(`${this.apiUrl}/projects/${id}`);
   }
 
-
+  /*Tareas*/
   getTasksForProject(projectId: number): Observable<Task[]> {
     return this.http.get<Task[]>(`${this.apiUrl}/projects/${projectId}/tasks`);
   }
@@ -60,7 +62,7 @@ export class ProjectService {
       tasks: this.getTasksForProject(projectId)
     });
   }
-
+  /*Invitacion*/
   inviteMember(projectId: number, username: string): Observable<void> {
     return this.http.post<void>(
       `${this.apiUrl}/projects/${projectId}/members`,
@@ -68,7 +70,7 @@ export class ProjectService {
       { params: { username } }
     );
   }
-
+  /*Busqueda usuarios*/
   searchUsers(query: string, projectId?: number): Observable<User[]> {
     if (!query.trim()) return of([]);
     const url = projectId
@@ -82,6 +84,7 @@ export class ProjectService {
       }
     });
   }
+  /*Comentarios*/
   getComments(taskId: number): Observable<Comment[]> {
     return this.http.get<Comment[]>(`${this.apiUrl}/tasks/${taskId}/comments`);
   }
@@ -93,7 +96,7 @@ export class ProjectService {
   deleteComment(commentId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/comments/${commentId}`);
   }
-
+  /*Sub tarea */
   getSubTasks(taskId: number): Observable<SubTask[]> {
     return this.http.get<SubTask[]>(`${this.apiUrl}/tasks/${taskId}/subtasks`);
   }
@@ -108,5 +111,34 @@ export class ProjectService {
 
   deleteSubTask(subTaskId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/subtasks/${subTaskId}`);
+  }
+  /*Dependencia*/
+  getDependencies(taskId: number): Observable<Dependency[]> {
+    return this.http.get<Dependency[]>(`${this.apiUrl}/tasks/${taskId}/dependencies`);
+  }
+
+  addDependency(taskId: number, blockerTaskId: number): Observable<Dependency> {
+    return this.http.post<Dependency>(`${this.apiUrl}/tasks/${taskId}/dependencies`, { blockerTaskId });
+  }
+
+  removeDependency(dependencyId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/dependencies/${dependencyId}`);
+  }
+
+  // --- ETIQUETA
+  getTags(projectId: number): Observable<Tag[]> {
+    return this.http.get<Tag[]>(`${this.apiUrl}/projects/${projectId}/tags`);
+  }
+
+  createTag(projectId: number, tag: Partial<Tag>): Observable<Tag> {
+    return this.http.post<Tag>(`${this.apiUrl}/projects/${projectId}/tags`, tag);
+  }
+
+  addTagToTask(taskId: number, tagId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/tasks/${taskId}/tags/${tagId}`, {});
+  }
+
+  removeTagFromTask(taskId: number, tagId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/tasks/${taskId}/tags/${tagId}`);
   }
 }

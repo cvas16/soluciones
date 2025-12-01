@@ -81,31 +81,38 @@
           </div>
           <div class="section-group mt-4">
             <div class="d-flex justify-content-between align-items-center mb-2">
-               <h5 class="section-label mb-0">Checklist</h5>
-               <span class="text-muted small" *ngIf="subTasks.length > 0">
-                 {{ getProgress() }}% completado
-               </span>
+              <h5 class="section-label mb-0">Checklist</h5>
+              <span class="text-muted small" *ngIf="subTasks.length > 0">
+                {{ getProgress() }}% completado
+              </span>
             </div>
 
-            <div class="progress mb-3" style="height: 6px;" *ngIf="subTasks.length > 0">
-              <div class="progress-bar bg-success"
-                   role="progressbar"
-                   [style.width.%]="getProgress()">
-              </div>
+            <div class="progress mb-3" style="height: 6px" *ngIf="subTasks.length > 0">
+              <div
+                class="progress-bar bg-success"
+                role="progressbar"
+                [style.width.%]="getProgress()"
+              ></div>
             </div>
 
             <div class="subtasks-list">
-              <div *ngFor="let sub of subTasks" class="subtask-item d-flex align-items-center gap-2 mb-2">
+              <div
+                *ngFor="let sub of subTasks"
+                class="subtask-item d-flex align-items-center gap-2 mb-2"
+              >
+                <input
+                  type="checkbox"
+                  class="form-check-input mt-0"
+                  [checked]="sub.completed"
+                  (change)="toggleSubTask(sub)"
+                  style="cursor: pointer"
+                />
 
-                <input type="checkbox"
-                       class="form-check-input mt-0"
-                       [checked]="sub.completed"
-                       (change)="toggleSubTask(sub)"
-                       style="cursor: pointer;">
-
-                <span class="flex-grow-1"
-                      [class.text-decoration-line-through]="sub.completed"
-                      [class.text-muted]="sub.completed">
+                <span
+                  class="flex-grow-1"
+                  [class.text-decoration-line-through]="sub.completed"
+                  [class.text-muted]="sub.completed"
+                >
                   {{ sub.title }}
                 </span>
 
@@ -114,15 +121,19 @@
             </div>
 
             <div class="mt-2">
-               <input type="text"
-                      class="form-control form-control-sm"
-                      placeholder="Añadir un elemento..."
-                      [(ngModel)]="newSubTaskTitle"
-                      (keyup.enter)="addSubTask()">
-               <div class="mt-2" *ngIf="newSubTaskTitle">
-                  <button class="btn btn-sm btn-primary me-2" (click)="addSubTask()">Añadir</button>
-                  <button class="btn btn-sm btn-light" (click)="newSubTaskTitle = ''">Cancelar</button>
-               </div>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                placeholder="Añadir un elemento..."
+                [(ngModel)]="newSubTaskTitle"
+                (keyup.enter)="addSubTask()"
+              />
+              <div class="mt-2" *ngIf="newSubTaskTitle">
+                <button class="btn btn-sm btn-primary me-2" (click)="addSubTask()">Añadir</button>
+                <button class="btn btn-sm btn-light" (click)="newSubTaskTitle = ''">
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
           <div class="section-group mt-5 pt-3 border-top">
@@ -136,10 +147,10 @@
 
                 <div class="comment-content w-100">
                   <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">
+                    <span class="fw-bold text-dark" style="font-size: 0.9rem">
                       {{ comment.authorUsername }}
                     </span>
-                    <span class="text-muted" style="font-size: 0.75rem;">
+                    <span class="text-muted" style="font-size: 0.75rem">
                       {{ getTimeAgo(comment.createdAt) }}
                     </span>
                   </div>
@@ -149,14 +160,16 @@
                   </div>
 
                   <div *ngIf="currentUser?.id === comment.authorId" class="mt-1">
-                    <button class="btn-link-danger" (click)="deleteComment(comment.id)">Eliminar</button>
+                    <button class="btn-link-danger" (click)="deleteComment(comment.id)">
+                      Eliminar
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="new-comment-area d-flex gap-3">
-              <div class="user-avatar" style="background: #0052cc; color: white;">
+              <div class="user-avatar" style="background: #0052cc; color: white">
                 {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'YO' }}
               </div>
               <div class="w-100">
@@ -165,11 +178,14 @@
                   rows="2"
                   placeholder="Escribe un comentario..."
                   [(ngModel)]="newCommentText"
-                  [disabled]="isSendingComment">
+                  [disabled]="isSendingComment"
+                >
                 </textarea>
-                <button class="btn btn-primary btn-sm"
-                        (click)="sendComment()"
-                        [disabled]="!newCommentText.trim() || isSendingComment">
+                <button
+                  class="btn btn-primary btn-sm"
+                  (click)="sendComment()"
+                  [disabled]="!newCommentText.trim() || isSendingComment"
+                >
                   Guardar
                 </button>
               </div>
@@ -207,8 +223,119 @@
                 <option value="Baja">Baja</option>
               </select>
             </div>
-          </div>
+            <label class="field-label mb-2" style="border-bottom: 1px solid #eee; width: 100%"
+              >BLOQUEOS</label
+            >
 
+            <div *ngIf="dependencies.length > 0" class="mb-3">
+              <div
+                *ngFor="let dep of dependencies"
+                class="dependency-item d-flex align-items-center justify-content-between p-2 mb-1 bg-light rounded border"
+              >
+                <div class="d-flex flex-column" style="overflow: hidden">
+                  <span
+                    class="text-truncate fw-bold"
+                    style="font-size: 0.8rem"
+                    title="{{ dep.blockerTaskTitle }}"
+                  >
+                    {{ dep.blockerTaskTitle }}
+                  </span>
+                  <span class="badge bg-secondary" style="font-size: 0.6rem; width: fit-content">
+                    {{ dep.blockerTaskStatus }}
+                  </span>
+                </div>
+                <button class="btn btn-sm text-danger p-0 ms-1" (click)="removeDependency(dep.id)">
+                  ×
+                </button>
+              </div>
+            </div>
+
+            <div class="sidebar-group">
+              <label class="field-label" style="font-size: 0.7rem">Añadir bloqueo</label>
+              <div class="d-flex gap-1">
+                <select class="form-select form-select-sm" [(ngModel)]="selectedBlockerId">
+                  <option [ngValue]="null">Seleccionar tarea...</option>
+                  <option *ngFor="let t of availableTasks" [ngValue]="t.id">
+                    #{{ t.id }} {{ t.title }}
+                  </option>
+                </select>
+                <button
+                  class="btn btn-sm btn-primary"
+                  (click)="addDependency()"
+                  [disabled]="!selectedBlockerId"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <label class="field-label mb-2" style="border-bottom: 1px solid #eee; width: 100%"
+              >ETIQUETAS</label
+            >
+
+            <div class="d-flex flex-wrap gap-1 mb-2">
+              <span
+                *ngFor="let tag of editedTask.tags"
+                class="badge rounded-pill d-flex align-items-center"
+                [style.background-color]="tag.color + '20'"
+                [style.color]="tag.color"
+                [style.border]="'1px solid ' + tag.color"
+              >
+                {{ tag.name }}
+                <span
+                  class="ms-1 cursor-pointer"
+                  (click)="removeTag(tag.id)"
+                  style="cursor: pointer"
+                  >×</span
+                >
+              </span>
+            </div>
+
+            <div class="dropdown">
+              <button
+                class="btn btn-sm btn-outline-secondary w-100 text-start d-flex justify-content-between align-items-center"
+                type="button"
+                (click)="showTagInput = !showTagInput"
+              >
+                <span>+ Añadir etiqueta</span>
+              </button>
+
+              <div
+                class="card p-2 mt-1 shadow-sm"
+                *ngIf="showTagInput"
+                style="position: absolute; z-index: 1000; width: 100%"
+              >
+                <div class="mb-2" style="max-height: 100px; overflow-y: auto">
+                  <div
+                    *ngFor="let tag of projectTags"
+                    class="p-1 cursor-pointer hover-bg"
+                    (click)="addTagToTask(tag)"
+                  >
+                    <span class="badge" [style.background-color]="tag.color">{{ tag.name }}</span>
+                  </div>
+                </div>
+
+                <hr class="my-1" />
+
+                <div class="d-flex gap-1 mb-1">
+                  <input
+                    type="color"
+                    class="form-control form-control-color form-control-sm"
+                    [(ngModel)]="newTagColor"
+                    title="Color"
+                  />
+                  <input
+                    type="text"
+                    class="form-control form-control-sm"
+                    placeholder="Nueva..."
+                    [(ngModel)]="newTagName"
+                  />
+                </div>
+                <button class="btn btn-sm btn-primary w-100" (click)="createTag()">Crear</button>
+              </div>
+            </div>
+          </div>
           <div class="sidebar-section">
             <label
               class="field-label mb-3"

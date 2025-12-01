@@ -10,7 +10,15 @@
     </div>
 
     <div class="w-100">
-
+      <div class="d-flex flex-wrap gap-1 mb-1" *ngIf="task.tags && task.tags.length > 0">
+       <span *ngFor="let tag of task.tags"
+             class="badge rounded-pill"
+             style="font-size: 0.6rem; font-weight: normal;"
+             [style.background-color]="tag.color"
+             [style.color]="'#fff'">
+         {{ tag.name }}
+       </span>
+    </div>
       <div class="card-title" [class.text-decoration-line-through]="isCompleted()">
         {{ task.title }}
       </div>

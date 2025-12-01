@@ -129,6 +129,7 @@ export class ProjectPage implements OnInit, OnDestroy {
     } else {
       const task = event.item.data as Task;
       const newStatus = event.container.id;
+      const oldStatus = task.status;
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
@@ -137,8 +138,21 @@ export class ProjectPage implements OnInit, OnDestroy {
       );
       task.status = newStatus;
       this.projectService.updateTask(task.id, { status: newStatus }).subscribe({
-        next: () => console.log('Estado guardado en BD'),
-        error: (err) => console.error('Error guardando movimiento:', err)
+        next: () => console.log('Estado guardado'),
+        error: (err) => {
+          console.error('Error al mover tarea:', err);
+
+          let mensaje = 'No se pudo mover la tarea.';
+          if (err.error && err.error.error) {
+              mensaje = err.error.error;
+          } else if (err.error && err.error.message) {
+              mensaje = err.error.message;
+          } else if (typeof err.error === 'string') {
+              mensaje = err.error;
+          }
+          alert("⚠️ " + mensaje);
+          if (this.projectId) this.loadProjectDetails(this.projectId);
+        }
       });
     }
   }
@@ -175,8 +189,22 @@ export class ProjectPage implements OnInit, OnDestroy {
     }
     this.projectService.updateTask(task.id, { status: newStatus }).subscribe({
       next: () => console.log(`Tarea marcada como ${newStatus}`),
+
       error: (err) => {
-        console.error('Error actualizando estado:', err);
+        console.error('Error del backend:', err);
+        let mensaje = 'No se pudo actualizar la tarea.';
+        if (err.error && err.error.error) {
+            mensaje = err.error.error;
+        }
+        else if (err.error && err.error.message) {
+            mensaje = err.error.message;
+        }
+        else if (typeof err.error === 'string') {
+            mensaje = err.error;
+        }
+
+        alert("⚠️ " + mensaje);
+        if (this.projectId) this.loadProjectDetails(this.projectId);
       }
     });
   }

@@ -8,6 +8,8 @@ import { HttpClient } from '@angular/common/http';
 import { Comment } from '../../../../shared/models/comment.model';
 import { AuthService } from '../../../../core/services/auth.services';
 import { SubTask } from '../../../../shared/models/sub-task.model';
+import { Dependency } from '../../../../shared/models/dependency.model';
+import { Tag } from '../../../../shared/models/tag.model';
 
 @Component({
   selector: 'app-task-detail-modal',
@@ -42,15 +44,105 @@ export class TaskDetailModal implements OnChanges{
   subTasks: SubTask[] = [];
   newSubTaskTitle = '';
 
+  dependencies: Dependency[] = [];
+  availableTasks: Task[] = [];
+  selectedBlockerId: number | null = null;
+
+  projectTags: Tag[] = [];
+  showTagInput = false;
+  newTagName = '';
+  newTagColor = '#ff0000';
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['task'] && this.task) {
       this.editedTask = { ...this.task };
       this.loadComments();
       this.loadSubTasks();
+      this.loadDependencies();
+      this.loadAvailableTasks();
+      this.loadProjectTags();
     }
     if (changes['projectMembers']) {
       console.log('TaskDetailModal projectMembers changed:', this.projectMembers);
     }
+  }
+  loadProjectTags(): void {
+    if (!this.task) return;
+    this.projectService.getTags(this.task.projectId).subscribe({
+      next: (tags) => this.projectTags = tags
+    });
+  }
+
+  createTag(): void {
+    if (!this.task || !this.newTagName.trim()) return;
+
+    const newTag = { name: this.newTagName, color: this.newTagColor };
+
+    this.projectService.createTag(this.task.projectId, newTag).subscribe({
+      next: (tag) => {
+        this.projectTags.push(tag);
+        this.addTagToTask(tag);
+        this.newTagName = '';
+        this.showTagInput = false;
+      }
+    });
+  }
+
+  addTagToTask(tag: Tag): void {
+    // Verificamos si ya la tiene
+    if (this.editedTask.tags?.some(t => t.id === tag.id)) return;
+
+    this.projectService.addTagToTask(this.task!.id, tag.id).subscribe({
+      next: () => {
+        this.editedTask.tags?.push(tag);
+      }
+    });
+  }
+
+  removeTag(tagId: number): void {
+    this.projectService.removeTagFromTask(this.task!.id, tagId).subscribe({
+      next: () => {
+        this.editedTask.tags = this.editedTask.tags?.filter(t => t.id !== tagId);
+      }
+    });
+  }
+
+  loadDependencies(): void {
+    if (!this.task) return;
+    this.projectService.getDependencies(this.task.id).subscribe({
+      next: (data) => this.dependencies = data,
+      error: (err) => console.error(err)
+    });
+  }
+
+  loadAvailableTasks(): void {
+    if (!this.task) return;
+    this.projectService.getTasksForProject(this.task.projectId).subscribe({
+      next: (tasks) => {
+        // Filtramos: No podemos bloquearnos a nosotros mismos
+        this.availableTasks = tasks.filter(t => t.id !== this.task!.id);
+      }
+    });
+  }
+
+  addDependency(): void {
+    if (!this.task || !this.selectedBlockerId) return;
+
+    this.projectService.addDependency(this.task.id, this.selectedBlockerId).subscribe({
+      next: (dep) => {
+        this.dependencies.push(dep);
+        this.selectedBlockerId = null;
+      },
+      error: (err) => alert(err.error?.message || 'Error al añadir dependencia')
+    });
+  }
+
+  removeDependency(depId: number): void {
+    this.projectService.removeDependency(depId).subscribe({
+      next: () => {
+        this.dependencies = this.dependencies.filter(d => d.id !== depId);
+      }
+    });
   }
 
   loadSubTasks(): void {
@@ -227,6 +319,13 @@ export class TaskDetailModal implements OnChanges{
       error: (err) => {
         console.error(err);
         this.isSaving = false;
+        let mensaje = 'Error al guardar los cambios.';
+        if (err.error && err.error.error) {
+            mensaje = err.error.error;
+        } else if (err.error && err.error.message) {
+            mensaje = err.error.message;
+        }
+        alert("⚠️ " + mensaje);
       }
     });
   }
