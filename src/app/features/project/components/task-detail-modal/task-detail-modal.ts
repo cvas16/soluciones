@@ -356,7 +356,23 @@ export class TaskDetailModal implements OnChanges{
         this.isSaving = false;
         this.taskDeleted.emit(this.task!.id);
         this.close();
+      },error: (err) => {
+        console.error('Error al eliminar:', err);
+        this.isSaving = false;
+        let mensaje = 'No se pudo eliminar la tarea.';
+        if (err.status === 403) {
+            mensaje = 'No tienes permiso para eliminar esta tarea (solo el dueño o el creador).';
+        }
+        else if (err.error && err.error.error) {
+             mensaje = err.error.error;
+        } else if (err.error && err.error.message) {
+             mensaje = err.error.message;
+        } else if (typeof err.error === 'string') {
+             mensaje = err.error;
+        }
+        alert("⚠️ " + mensaje);
       }
+
     });
   }
 

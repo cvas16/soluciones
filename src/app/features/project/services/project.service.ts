@@ -10,6 +10,7 @@ import { SubTask } from '../../../shared/models/sub-task.model';
 import { Dependency } from '../../../shared/models/dependency.model';
 import { Tag } from '../../../shared/models/tag.model';
 import { Milestone } from '../../../shared/models/milestone.model';
+import { ActivityLog } from '../../../shared/models/activity-log.model';
 
 interface ProjectDetailsResponse {
   project: Project;
@@ -157,5 +158,9 @@ export class ProjectService {
 
   deleteMilestone(milestoneId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/milestones/${milestoneId}`);
+  }
+
+  getProjectActivity(projectId: number): Observable<ActivityLog[]> {
+    return this.http.get<ActivityLog[]>(`${this.apiUrl}/projects/${projectId}/activity`);
   }
 }

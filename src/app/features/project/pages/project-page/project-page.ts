@@ -11,11 +11,12 @@ import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from 
 import { TaskDetailModal } from '../../components/task-detail-modal/task-detail-modal';
 import { InviteMemberModal } from '../../components/invite-member-modal/invite-member-modal';
 import { MilestoneListModal } from '../../components/milestone-list-modal/milestone-list-modal';
+import { ActivityLogModal } from '../../components/activity-log-modal/activity-log-modal';
 
 @Component({
   selector: 'app-project-page',
   standalone: true,
-  imports: [CommonModule, NgIf, BoardColumn, DragDropModule, TaskDetailModal, InviteMemberModal,MilestoneListModal],
+  imports: [CommonModule, NgIf, BoardColumn, DragDropModule, TaskDetailModal, InviteMemberModal,MilestoneListModal,ActivityLogModal],
   templateUrl: './project-page.html',
   styleUrls: ['./project-page.css'],
 })
@@ -52,6 +53,12 @@ export class ProjectPage implements OnInit, OnDestroy {
     'Desestimado'
   ];
   showMilestoneModal = false;
+
+  showActivityModal = false;
+
+  openActivityModal() {
+    this.showActivityModal = true;
+  }
 
   openMilestoneModal() {
     this.showMilestoneModal = true;
