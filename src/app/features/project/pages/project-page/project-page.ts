@@ -10,11 +10,12 @@ import { BoardColumn } from '../../components/board-column/board-column';
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TaskDetailModal } from '../../components/task-detail-modal/task-detail-modal';
 import { InviteMemberModal } from '../../components/invite-member-modal/invite-member-modal';
+import { MilestoneListModal } from '../../components/milestone-list-modal/milestone-list-modal';
 
 @Component({
   selector: 'app-project-page',
   standalone: true,
-  imports: [CommonModule, NgIf, BoardColumn, DragDropModule, TaskDetailModal, InviteMemberModal],
+  imports: [CommonModule, NgIf, BoardColumn, DragDropModule, TaskDetailModal, InviteMemberModal,MilestoneListModal],
   templateUrl: './project-page.html',
   styleUrls: ['./project-page.css'],
 })
@@ -50,6 +51,11 @@ export class ProjectPage implements OnInit, OnDestroy {
     'Finalizado',
     'Desestimado'
   ];
+  showMilestoneModal = false;
+
+  openMilestoneModal() {
+    this.showMilestoneModal = true;
+  }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');

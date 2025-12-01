@@ -14,4 +14,6 @@ export interface Task {
   attachments?: string[];
   subTasks?: SubTask[];
   tags?: Tag[];
+  milestoneId?: number;
+  milestoneName?: string;
 }

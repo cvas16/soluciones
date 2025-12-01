@@ -10,6 +10,7 @@ import { AuthService } from '../../../../core/services/auth.services';
 import { SubTask } from '../../../../shared/models/sub-task.model';
 import { Dependency } from '../../../../shared/models/dependency.model';
 import { Tag } from '../../../../shared/models/tag.model';
+import { Milestone } from '../../../../shared/models/milestone.model';
 
 @Component({
   selector: 'app-task-detail-modal',
@@ -53,6 +54,8 @@ export class TaskDetailModal implements OnChanges{
   newTagName = '';
   newTagColor = '#ff0000';
 
+  milestones: Milestone[] = [];
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['task'] && this.task) {
       this.editedTask = { ...this.task };
@@ -61,11 +64,25 @@ export class TaskDetailModal implements OnChanges{
       this.loadDependencies();
       this.loadAvailableTasks();
       this.loadProjectTags();
+      this.loadMilestones();
     }
     if (changes['projectMembers']) {
       console.log('TaskDetailModal projectMembers changed:', this.projectMembers);
     }
   }
+
+  loadMilestones() {
+    if (!this.task) return;
+    this.projectService.getMilestones(this.task.projectId).subscribe(data => {
+      this.milestones = data;
+    });
+  }
+
+  onMilestoneChange(): void {
+     if (!this.task || !this.editedTask.milestoneId) return;
+     this.projectService.addTaskToMilestone(this.task.id, this.editedTask.milestoneId).subscribe();
+  }
+
   loadProjectTags(): void {
     if (!this.task) return;
     this.projectService.getTags(this.task.projectId).subscribe({

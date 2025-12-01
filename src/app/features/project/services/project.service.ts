@@ -9,6 +9,7 @@ import { Comment } from '../../../shared/models/comment.model';
 import { SubTask } from '../../../shared/models/sub-task.model';
 import { Dependency } from '../../../shared/models/dependency.model';
 import { Tag } from '../../../shared/models/tag.model';
+import { Milestone } from '../../../shared/models/milestone.model';
 
 interface ProjectDetailsResponse {
   project: Project;
@@ -140,5 +141,21 @@ export class ProjectService {
 
   removeTagFromTask(taskId: number, tagId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/tasks/${taskId}/tags/${tagId}`);
+  }
+
+  getMilestones(projectId: number): Observable<Milestone[]> {
+    return this.http.get<Milestone[]>(`${this.apiUrl}/projects/${projectId}/milestones`);
+  }
+
+  createMilestone(projectId: number, milestone: any): Observable<Milestone> {
+    return this.http.post<Milestone>(`${this.apiUrl}/projects/${projectId}/milestones`, milestone);
+  }
+
+  addTaskToMilestone(taskId: number, milestoneId: number): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/tasks/${taskId}/milestone/${milestoneId}`, {});
+  }
+
+  deleteMilestone(milestoneId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/milestones/${milestoneId}`);
   }
 }

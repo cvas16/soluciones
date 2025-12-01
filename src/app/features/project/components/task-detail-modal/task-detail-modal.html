@@ -403,6 +403,19 @@
               <label class="field-label">Actualizado</label>
               <span class="date-text">Hace un momento</span>
             </div>
+            <div class="sidebar-group">
+              <label class="field-label">HITO / SPRINT</label>
+              <select
+                class="form-select sidebar-select"
+                [(ngModel)]="editedTask.milestoneId"
+                (change)="onMilestoneChange()"
+              >
+                <option [ngValue]="null">Sin hito</option>
+                <option *ngFor="let m of milestones" [ngValue]="m.id">
+                  {{ m.name }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
