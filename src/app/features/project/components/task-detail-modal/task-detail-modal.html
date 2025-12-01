@@ -1,6 +1,8 @@
 <div *ngIf="isVisible" class="modal-backdrop" (click)="onBackdropClick($event)">
   <div class="modal-dialog fixed-top" (click)="$event.stopPropagation()">
+
     <div class="modal-content-wrapper" *ngIf="task">
+
       <div class="modal-header">
         <div class="breadcrumb">
           <div class="project-icon"></div>
@@ -11,6 +13,7 @@
       </div>
 
       <div class="modal-body-layout">
+
         <div class="main-content">
           <input
             type="text"
@@ -31,111 +34,87 @@
 
           <div class="section-group mt-4">
             <h5 class="section-label">Archivos y Enlaces</h5>
-
             <div class="attachments-list">
-              <div
-                *ngFor="let url of editedTask.attachments; let i = index"
-                class="attachment-item-wrapper"
-              >
+              <div *ngFor="let url of editedTask.attachments; let i = index" class="attachment-item-wrapper">
                 <a [href]="url" target="_blank" class="attachment-card" title="{{ url }}">
                   <div class="attachment-thumb" [ngSwitch]="getAttachmentType(url)">
-                    <img *ngSwitchCase="'image'" [src]="url" class="img-preview" />
-                    <span *ngSwitchCase="'video'" style="color: #ff0000; font-size: 1.5rem">▶</span>
-                    <span *ngSwitchCase="'link'" style="color: #2563eb; font-size: 1.5rem">🔗</span>
-                    <span *ngSwitchDefault style="font-size: 1.5rem">📄</span>
+                    <img *ngSwitchCase="'image'" [src]="url" class="img-preview">
+                    <span *ngSwitchCase="'video'" style="color: #ff0000; font-size: 1.5rem;">▶</span>
+                    <span *ngSwitchCase="'link'" style="color: #2563eb; font-size: 1.5rem;">🔗</span>
+                    <span *ngSwitchDefault style="font-size: 1.5rem;">📄</span>
                   </div>
                   <div class="attachment-info">
-                    <span
-                      class="text-truncate d-block fw-bold"
-                      style="max-width: 110px; font-size: 0.8rem"
-                    >
-                      {{ getAttachmentName(url) }}
+                    <span class="text-truncate d-block fw-bold" style="max-width: 110px; font-size: 0.8rem;">
+                        {{ getAttachmentName(url) }}
                     </span>
-                    <span class="text-muted" style="font-size: 0.7rem">
-                      {{ getAttachmentType(url) | uppercase }}
+                    <span class="text-muted" style="font-size: 0.7rem;">
+                        {{ getAttachmentType(url) | uppercase }}
                     </span>
                   </div>
                 </a>
-                <button class="btn-remove-attachment" (click)="removeAttachment(i)" title="Quitar">
-                  ×
-                </button>
+                <button class="btn-remove-attachment" (click)="removeAttachment(i)" title="Quitar">×</button>
               </div>
-              <label class="attachment-card add-card" style="cursor: pointer">
-                <span style="font-size: 1.5rem; color: #ccc">+</span>
-                <span style="font-size: 0.8rem; color: #999">Subir</span>
-                <input type="file" (change)="onFileSelected($event)" style="display: none" />
+
+              <label class="attachment-card add-card" style="cursor: pointer;">
+                 <span style="font-size: 1.5rem; color: #ccc;">+</span>
+                 <span style="font-size: 0.8rem; color: #999;">Subir</span>
+                 <span *ngIf="isUploading" class="spinner-border spinner-border-sm text-primary"></span>
+                 <input type="file" (change)="onFileSelected($event)" style="display: none;">
               </label>
-              <div class="input-group mt-3">
-                <input
-                  type="text"
-                  class="form-control form-control-sm"
-                  placeholder="Pegar enlace (YouTube, Web...)"
-                  [(ngModel)]="newAttachmentUrl"
-                  (keyup.enter)="addAttachment()"
-                />
-                <button class="btn btn-sm btn-outline-secondary" (click)="addAttachment()">
-                  Añadir Link
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="section-group mt-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
-              <h5 class="section-label mb-0">Checklist</h5>
-              <span class="text-muted small" *ngIf="subTasks.length > 0">
-                {{ getProgress() }}% completado
-              </span>
             </div>
 
-            <div class="progress mb-3" style="height: 6px" *ngIf="subTasks.length > 0">
-              <div
-                class="progress-bar bg-success"
-                role="progressbar"
-                [style.width.%]="getProgress()"
-              ></div>
+            <div class="input-group mt-3">
+               <input type="text" class="form-control form-control-sm"
+                      placeholder="Pegar enlace (YouTube, Web...)"
+                      [(ngModel)]="newAttachmentUrl"
+                      (keyup.enter)="addAttachment()">
+               <button class="btn btn-sm btn-outline-secondary" (click)="addAttachment()">
+                 Añadir Link
+               </button>
+            </div>
+          </div>
+
+          <div class="section-group mt-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+               <h5 class="section-label mb-0">Checklist</h5>
+               <span class="text-muted small" *ngIf="subTasks.length > 0">
+                 {{ getProgress() }}% completado
+               </span>
+            </div>
+
+            <div class="progress mb-3" style="height: 6px;" *ngIf="subTasks.length > 0">
+              <div class="progress-bar bg-success" role="progressbar" [style.width.%]="getProgress()"></div>
             </div>
 
             <div class="subtasks-list">
-              <div
-                *ngFor="let sub of subTasks"
-                class="subtask-item d-flex align-items-center gap-2 mb-2"
-              >
-                <input
-                  type="checkbox"
-                  class="form-check-input mt-0"
-                  [checked]="sub.completed"
-                  (change)="toggleSubTask(sub)"
-                  style="cursor: pointer"
-                />
-
-                <span
-                  class="flex-grow-1"
-                  [class.text-decoration-line-through]="sub.completed"
-                  [class.text-muted]="sub.completed"
-                >
+              <div *ngFor="let sub of subTasks" class="subtask-item d-flex align-items-center gap-2 mb-2">
+                <input type="checkbox"
+                       class="form-check-input mt-0"
+                       [checked]="sub.completed"
+                       (change)="toggleSubTask(sub)"
+                       style="cursor: pointer;">
+                <span class="flex-grow-1"
+                      [class.text-decoration-line-through]="sub.completed"
+                      [class.text-muted]="sub.completed">
                   {{ sub.title }}
                 </span>
-
                 <button class="btn-remove-subtask" (click)="deleteSubTaskItem(sub.id)">×</button>
               </div>
             </div>
 
             <div class="mt-2">
-              <input
-                type="text"
-                class="form-control form-control-sm"
-                placeholder="Añadir un elemento..."
-                [(ngModel)]="newSubTaskTitle"
-                (keyup.enter)="addSubTask()"
-              />
-              <div class="mt-2" *ngIf="newSubTaskTitle">
-                <button class="btn btn-sm btn-primary me-2" (click)="addSubTask()">Añadir</button>
-                <button class="btn btn-sm btn-light" (click)="newSubTaskTitle = ''">
-                  Cancelar
-                </button>
-              </div>
+               <input type="text"
+                      class="form-control form-control-sm"
+                      placeholder="Añadir un elemento..."
+                      [(ngModel)]="newSubTaskTitle"
+                      (keyup.enter)="addSubTask()">
+               <div class="mt-2" *ngIf="newSubTaskTitle">
+                  <button class="btn btn-sm btn-primary me-2" (click)="addSubTask()">Añadir</button>
+                  <button class="btn btn-sm btn-light" (click)="newSubTaskTitle = ''">Cancelar</button>
+               </div>
             </div>
           </div>
+
           <div class="section-group mt-5 pt-3 border-top">
             <h5 class="section-label mb-3">Actividad</h5>
 
@@ -144,64 +123,53 @@
                 <div class="user-avatar mt-1">
                   {{ comment.authorUsername.charAt(0).toUpperCase() }}
                 </div>
-
                 <div class="comment-content w-100">
                   <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="fw-bold text-dark" style="font-size: 0.9rem">
+                    <span class="fw-bold text-dark" style="font-size: 0.9rem;">
                       {{ comment.authorUsername }}
                     </span>
-                    <span class="text-muted" style="font-size: 0.75rem">
+                    <span class="text-muted" style="font-size: 0.75rem;">
                       {{ getTimeAgo(comment.createdAt) }}
                     </span>
                   </div>
-
                   <div class="comment-text p-2 bg-light rounded">
                     {{ comment.text }}
                   </div>
-
                   <div *ngIf="currentUser?.id === comment.authorId" class="mt-1">
-                    <button class="btn-link-danger" (click)="deleteComment(comment.id)">
-                      Eliminar
-                    </button>
+                    <button class="btn-link-danger" (click)="deleteComment(comment.id)">Eliminar</button>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="new-comment-area d-flex gap-3">
-              <div class="user-avatar" style="background: #0052cc; color: white">
-                {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'YO' }}
-              </div>
-              <div class="w-100">
-                <textarea
-                  class="form-control mb-2"
-                  rows="2"
-                  placeholder="Escribe un comentario..."
-                  [(ngModel)]="newCommentText"
-                  [disabled]="isSendingComment"
-                >
-                </textarea>
-                <button
-                  class="btn btn-primary btn-sm"
-                  (click)="sendComment()"
-                  [disabled]="!newCommentText.trim() || isSendingComment"
-                >
-                  Guardar
-                </button>
-              </div>
+               <div class="user-avatar" style="background: #0052cc; color: white;">
+                  {{ currentUser?.username?.charAt(0)?.toUpperCase() || 'YO' }}
+               </div>
+               <div class="w-100">
+                 <textarea
+                   class="form-control mb-2"
+                   rows="2"
+                   placeholder="Escribe un comentario..."
+                   [(ngModel)]="newCommentText"
+                   [disabled]="isSendingComment">
+                 </textarea>
+                 <button class="btn btn-primary btn-sm"
+                         (click)="sendComment()"
+                         [disabled]="!newCommentText.trim() || isSendingComment">
+                   Guardar
+                 </button>
+               </div>
             </div>
           </div>
         </div>
 
         <div class="sidebar">
+
           <div class="sidebar-section">
             <div class="sidebar-group">
               <label class="field-label">ESTADO</label>
-              <select
-                [(ngModel)]="editedTask.status"
-                class="status-select"
-                [attr.value]="editedTask.status"
-              >
+              <select [(ngModel)]="editedTask.status" class="status-select" [attr.value]="editedTask.status">
                 <option value="Pendiente">PENDIENTE</option>
                 <option value="En Análisis">EN ANÁLISIS</option>
                 <option value="En Desarrollo">EN DESARROLLO</option>
@@ -210,19 +178,114 @@
                 <option value="Desestimado">DESESTIMADO</option>
               </select>
             </div>
-
             <div class="sidebar-group">
               <label class="field-label">PRIORIDAD</label>
-              <select
-                [(ngModel)]="editedTask.priority"
-                class="form-select form-select-sm border-0 bg-transparent fw-bold ps-0"
-                style="color: #172b4d"
-              >
+              <select [(ngModel)]="editedTask.priority" class="form-select form-select-sm border-0 bg-transparent fw-bold ps-0" style="color: #172b4d;">
                 <option value="Alta">Alta</option>
                 <option value="Media">Media</option>
                 <option value="Baja">Baja</option>
               </select>
             </div>
+          </div>
+
+          <div class="sidebar-section">
+            <label class="field-label mb-3" style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding-bottom: 5px; width: 100%;">PERSONAS</label>
+            <div class="sidebar-group">
+              <label class="field-label">Responsable</label>
+              <div class="d-flex align-items-center gap-2">
+                 <div class="user-avatar">
+                   {{ getAssignedUserInitial() }}
+                 </div>
+                 <select class="form-select form-select-sm border-0 bg-transparent"
+                         [(ngModel)]="editedTask.assignedUserId"
+                         [ngModelOptions]="{standalone: true}"
+                         [disabled]="!canAssign">
+                    <option [ngValue]="null">Sin asignar</option>
+                    <option *ngFor="let member of projectMembers" [ngValue]="member.id">
+                      {{ member.username }}
+                    </option>
+                 </select>
+                 <small *ngIf="!canAssign" class="text-muted d-block mt-1" style="font-size: 0.7rem">
+                   Solo el dueño puede asignar.
+                 </small>
+              </div>
+            </div>
+            <div class="sidebar-group">
+              <label class="field-label">Informador</label>
+              <div class="user-row">
+                <div class="user-avatar" style="background: #eae6ff; color: #403294">
+                  {{ task.createdByUsername ? task.createdByUsername.charAt(0).toUpperCase() : '?' }}
+                </div>
+                <span class="user-name">{{ task.createdByUsername || 'Sistema' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <label class="field-label mb-3" style="font-size: 0.85rem; border-bottom: 1px solid #eee; padding-bottom: 5px; width: 100%;">FECHAS</label>
+            <div class="sidebar-group">
+              <label class="field-label">Creado</label>
+              <span class="date-text">{{ getTimeAgo(task.createdAt) }}</span>
+            </div>
+            <div class="sidebar-group">
+              <label class="field-label">Actualizado</label>
+              <span class="date-text">Hace un momento</span>
+            </div>
+            <div class="sidebar-group">
+              <label class="field-label">HITO / SPRINT</label>
+              <select class="form-select sidebar-select" [(ngModel)]="editedTask.milestoneId" (change)="onMilestoneChange()">
+                <option [ngValue]="null">Sin hito</option>
+                <option *ngFor="let m of milestones" [ngValue]="m.id">
+                  {{ m.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <label class="field-label mb-2" style="border-bottom: 1px solid #eee; width: 100%;">TIEMPO INVERTIDO</label>
+
+            <div class="mb-3 d-flex align-items-baseline gap-2">
+              <span class="fw-bold text-dark" style="font-size: 1.4rem;">{{ getTotalTime() }}</span>
+              <span class="text-muted small">totales</span>
+            </div>
+
+            <div class="mb-3">
+              <div class="input-group input-group-sm mb-1">
+                 <input type="number" class="form-control" placeholder="Min" [(ngModel)]="newTimeDuration" min="1">
+                 <span class="input-group-text">min</span>
+              </div>
+              <div class="input-group input-group-sm">
+                 <input type="text" class="form-control" placeholder="Descripción (opcional)"
+                        [(ngModel)]="newTimeDescription" (keyup.enter)="logTime()">
+                 <button class="btn btn-outline-primary" (click)="logTime()" [disabled]="!newTimeDuration || isLoggingTime">
+                    +
+                 </button>
+              </div>
+            </div>
+
+            <div class="time-list" style="max-height: 150px; overflow-y: auto;">
+               <div *ngFor="let entry of timeEntries" class="time-entry-item d-flex justify-content-between align-items-start mb-2 p-2 bg-light rounded">
+                  <div>
+                     <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-secondary" style="font-size: 0.7rem;">{{ formatDuration(entry.durationMinutes) }}</span>
+                        <small class="fw-bold text-dark" style="font-size: 0.75rem;">{{ entry.username }}</small>
+                     </div>
+                     <div class="text-muted text-truncate" style="font-size: 0.75rem; max-width: 120px;" title="{{entry.description}}">
+                        {{ entry.description || 'Sin nota' }}
+                     </div>
+                  </div>
+
+                  <button class="btn btn-sm text-danger p-0"
+                          style="line-height: 1;"
+                          (click)="deleteTimeEntry(entry.id)"
+                          *ngIf="currentUser?.username === entry.username || canAssign">
+                    ×
+                  </button>
+               </div>
+            </div>
+          </div>
+          <div class="sidebar-section">
             <label class="field-label mb-2" style="border-bottom: 1px solid #eee; width: 100%"
               >BLOQUEOS</label
             >
@@ -269,6 +332,7 @@
               </div>
             </div>
           </div>
+
           <div class="sidebar-section">
             <label class="field-label mb-2" style="border-bottom: 1px solid #eee; width: 100%"
               >ETIQUETAS</label
@@ -336,91 +400,8 @@
               </div>
             </div>
           </div>
-          <div class="sidebar-section">
-            <label
-              class="field-label mb-3"
-              style="
-                font-size: 0.85rem;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 5px;
-                width: 100%;
-              "
-              >PERSONAS</label
-            >
 
-            <div class="sidebar-group">
-              <label class="field-label">Responsable</label>
-              <div class="d-flex align-items-center gap-2">
-                <div class="user-avatar">
-                  {{ getAssignedUserInitial() }}
-                </div>
-                <select
-                  class="form-select form-select-sm border-0 bg-transparent"
-                  [(ngModel)]="editedTask.assignedUserId"
-                  [ngModelOptions]="{ standalone: true }"
-                  [disabled]="!canAssign"
-                >
-                  <option [ngValue]="null">Sin asignar</option>
-                  <option *ngFor="let member of projectMembers" [ngValue]="member?.id ?? member">
-                    {{ member?.username ?? member }}
-                  </option>
-                </select>
-                <small *ngIf="!canAssign" class="text-muted d-block mt-1" style="font-size: 0.7rem">
-                  Solo el dueño puede asignar.
-                </small>
-              </div>
-            </div>
-
-            <div class="sidebar-group">
-              <label class="field-label">Informador</label>
-              <div class="user-row">
-                <div class="user-avatar" style="background: #eae6ff; color: #403294">
-                  {{
-                    task.createdByUsername ? task.createdByUsername.charAt(0).toUpperCase() : '?'
-                  }}
-                </div>
-                <span class="user-name">{{ task.createdByUsername || 'Sistema' }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="sidebar-section">
-            <label
-              class="field-label mb-3"
-              style="
-                font-size: 0.85rem;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 5px;
-                width: 100%;
-              "
-              >FECHAS</label
-            >
-            <div class="sidebar-group">
-              <label class="field-label">Creado</label>
-              <span class="date-text">{{ getTimeAgo(task.createdAt) }}</span>
-            </div>
-            <div class="sidebar-group">
-              <label class="field-label">Actualizado</label>
-              <span class="date-text">Hace un momento</span>
-            </div>
-            <div class="sidebar-group">
-              <label class="field-label">HITO / SPRINT</label>
-              <select
-                class="form-select sidebar-select"
-                [(ngModel)]="editedTask.milestoneId"
-                (change)="onMilestoneChange()"
-              >
-                <option [ngValue]="null">Sin hito</option>
-                <option *ngFor="let m of milestones" [ngValue]="m.id">
-                  {{ m.name }}
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-footer">
+        </div> </div> <div class="modal-footer">
         <button class="btn btn-danger" (click)="deleteTask()">Eliminar</button>
         <div style="flex: 1"></div>
         <button class="btn btn-secondary" (click)="close()">Cancelar</button>
@@ -428,6 +409,7 @@
           {{ isSaving ? 'Guardando...' : 'Guardar' }}
         </button>
       </div>
+
     </div>
   </div>
 </div>

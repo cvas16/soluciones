@@ -11,6 +11,7 @@ import { SubTask } from '../../../../shared/models/sub-task.model';
 import { Dependency } from '../../../../shared/models/dependency.model';
 import { Tag } from '../../../../shared/models/tag.model';
 import { Milestone } from '../../../../shared/models/milestone.model';
+import { TimeEntry } from '../../../../shared/models/time-entry.model';
 
 @Component({
   selector: 'app-task-detail-modal',
@@ -56,6 +57,11 @@ export class TaskDetailModal implements OnChanges{
 
   milestones: Milestone[] = [];
 
+  timeEntries: TimeEntry[] = [];
+  newTimeDuration: number | null = null;
+  newTimeDescription: string = '';
+  isLoggingTime = false;
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['task'] && this.task) {
       this.editedTask = { ...this.task };
@@ -65,10 +71,65 @@ export class TaskDetailModal implements OnChanges{
       this.loadAvailableTasks();
       this.loadProjectTags();
       this.loadMilestones();
+      this.loadTimeEntries();
     }
     if (changes['projectMembers']) {
       console.log('TaskDetailModal projectMembers changed:', this.projectMembers);
     }
+  }
+
+  loadTimeEntries(): void {
+    if (!this.task) return;
+    this.projectService.getTaskTime(this.task.id).subscribe({
+      next: (data) => this.timeEntries = data
+    });
+  }
+
+  logTime(): void {
+    if (!this.task || !this.newTimeDuration || this.newTimeDuration <= 0) return;
+
+    this.isLoggingTime = true;
+    const payload = {
+      durationMinutes: this.newTimeDuration,
+      description: this.newTimeDescription
+    };
+
+    this.projectService.logTime(this.task.id, payload).subscribe({
+      next: (entry) => {
+        this.timeEntries.unshift(entry);
+        this.newTimeDuration = null;
+        this.newTimeDescription = '';
+        this.isLoggingTime = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoggingTime = false;
+        alert('Error al registrar tiempo');
+      }
+    });
+  }
+
+  deleteTimeEntry(entryId: number): void {
+    if(!confirm('¿Borrar este registro de tiempo?')) return;
+
+    this.projectService.deleteTimeEntry(entryId).subscribe({
+      next: () => {
+        this.timeEntries = this.timeEntries.filter(e => e.id !== entryId);
+      }
+    });
+  }
+
+  formatDuration(minutes: number): string {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    if (h > 0 && m > 0) return `${h}h ${m}m`;
+    if (h > 0) return `${h}h`;
+    return `${m}m`;
+  }
+
+  getTotalTime(): string {
+    const totalMinutes = this.timeEntries.reduce((acc, curr) => acc + curr.durationMinutes, 0);
+    return this.formatDuration(totalMinutes);
   }
 
   loadMilestones() {

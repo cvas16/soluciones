@@ -11,6 +11,7 @@ import { Dependency } from '../../../shared/models/dependency.model';
 import { Tag } from '../../../shared/models/tag.model';
 import { Milestone } from '../../../shared/models/milestone.model';
 import { ActivityLog } from '../../../shared/models/activity-log.model';
+import { TimeEntry } from '../../../shared/models/time-entry.model';
 
 interface ProjectDetailsResponse {
   project: Project;
@@ -162,5 +163,17 @@ export class ProjectService {
 
   getProjectActivity(projectId: number): Observable<ActivityLog[]> {
     return this.http.get<ActivityLog[]>(`${this.apiUrl}/projects/${projectId}/activity`);
+  }
+
+  getTaskTime(taskId: number): Observable<TimeEntry[]> {
+    return this.http.get<TimeEntry[]>(`${this.apiUrl}/tasks/${taskId}/time`);
+  }
+
+  logTime(taskId: number, entry: { durationMinutes: number, description?: string }): Observable<TimeEntry> {
+    return this.http.post<TimeEntry>(`${this.apiUrl}/tasks/${taskId}/time`, entry);
+  }
+
+  deleteTimeEntry(entryId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/time/${entryId}`);
   }
 }
