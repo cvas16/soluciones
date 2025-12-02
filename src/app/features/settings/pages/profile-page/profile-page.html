@@ -79,16 +79,16 @@
             </div>
           </div>
 
-          <div class="mb-3">
+         <div class="mb-3">
             <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
-            <input type="password" id="confirmPassword" class="form-control" formControlName="confirmPassword"
-                   [class.is-invalid]="isInvalid(passwordForm, 'confirmPassword') || (passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched)">
+            <input type="password"
+                   id="confirmPassword"
+                   class="form-control"
+                   formControlName="confirmPassword"
+                   [class.is-invalid]="isInvalid(passwordForm, 'confirmPassword')">
 
             <div *ngIf="isInvalid(passwordForm, 'confirmPassword')" class="invalid-feedback">
-               {{ getErrorMessage(passwordForm, 'confirmPassword') }}
-            </div>
-            <div *ngIf="passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched && !passwordForm.get('confirmPassword')?.errors" class="invalid-feedback d-block">
-               Las contraseñas no coinciden.
+              {{ getErrorMessage(passwordForm, 'confirmPassword') }}
             </div>
           </div>
 

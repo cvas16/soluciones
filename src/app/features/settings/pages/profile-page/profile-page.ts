@@ -118,29 +118,43 @@ export class ProfilePage implements OnInit {
         this.passwordForm.reset();
       },
       error: (err) => {
-        this.isSavingPassword = false;
-        this.passwordError = err.message || 'Error al cambiar la contraseña.';
+        let msg = 'Error al cambiar la contraseña.';
+        if (err.error && err.error.error) {
+            msg = err.error.error;
+        } else if (typeof err.error === 'string') {
+            msg = err.error;
+        }
+        this.passwordError = msg;
       }
     });
   }
 
   isInvalid(form: FormGroup, field: string): boolean {
     const control = form.get(field);
-    return !!(control && control.errors && (control.dirty || control.touched));
+    const hasControlError = !!(control && control.errors && (control.dirty || control.touched));
+    if (field === 'confirmPassword') {
+       const hasMismatch = form.hasError('mismatch') && (control?.dirty || control?.touched);
+       return hasControlError || (hasMismatch ?? false);
+    }
+
+    return hasControlError;
   }
 
   getErrorMessage(form: FormGroup, field: string): string {
     const control = form.get(field);
-    if (!control) return '';
 
-    if (control.hasError('required')) return 'Este campo es requerido.';
-    if (control.hasError('minlength')) return `Mínimo ${control.errors?.['minlength'].requiredLength} caracteres.`;
-    if (control.hasError('email')) return 'Email no válido.';
-
-    if (field === 'confirmPassword' && form.hasError('mismatch')) {
-        return 'Las contraseñas no coinciden.';
+    if (control?.hasError('required')) {
+      return 'Este campo es requerido.';
     }
-
-    return 'Campo inválido.';
+    if (control?.hasError('minlength')) {
+      return `Mínimo ${control.errors?.['minlength'].requiredLength} caracteres.`;
+    }
+    if (control?.hasError('email')) {
+      return 'Email no válido.';
+    }
+    if (field === 'confirmPassword' && form.hasError('mismatch')) {
+      return 'Las contraseñas no coinciden.';
+    }
+    return control?.errors ? 'Campo inválido.' : '';
   }
 }

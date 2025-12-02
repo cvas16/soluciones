@@ -75,8 +75,10 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   onModalConfirm(): void {
-    this.showDeleteModal = false;
+   this.showDeleteModal = false;
+
     if (this.projectToDeleteId === null) return;
+
     this.deletingProjectId = this.projectToDeleteId;
     const idToDelete = this.projectToDeleteId;
 
@@ -90,10 +92,23 @@ export class DashboardPage implements OnInit, OnDestroy {
         this.projectToDeleteName = null;
       },
       error: (err) => {
-        this.errorMessage = err.message || 'Error al eliminar el proyecto.';
+        console.error('Error al eliminar proyecto:', err);
         this.deletingProjectId = null;
         this.projectToDeleteId = null;
         this.projectToDeleteName = null;
+
+        let mensaje = 'No se pudo eliminar el proyecto.';
+
+        if (err.status === 403) {
+             mensaje = 'No tienes permiso para eliminar este proyecto (solo el dueño puede hacerlo).';
+        } else if (err.error && err.error.error) {
+             mensaje = err.error.error;
+        } else if (err.error && err.error.message) {
+             mensaje = err.error.message;
+        }
+        this.errorMessage = mensaje;
+
+        setTimeout(() => this.errorMessage = null, 5000);
       }
     });
   }

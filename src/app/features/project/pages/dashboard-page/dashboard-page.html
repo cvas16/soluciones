@@ -17,9 +17,9 @@
 
   <app-spinner *ngIf="isLoading" message="Cargando proyectos..."></app-spinner>
 
-  <div *ngIf="errorMessage" class="alert alert-danger">
-    <span class="alert-icon"><i class="bi bi-exclamation-triangle-fill"></i></span>
-    {{ errorMessage }}
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <span class="alert-icon">⚠️</span> {{ errorMessage }}
+    <button type="button" class="btn-close" (click)="errorMessage = null"></button>
   </div>
 
   <div *ngIf="!isLoading && !errorMessage" class="projects-section">

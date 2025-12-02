@@ -33,7 +33,6 @@ export class LoginPage implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-
     this.loginSubscription?.unsubscribe();
   }
 

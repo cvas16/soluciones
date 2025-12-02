@@ -1,32 +1,32 @@
-import { Injectable } from '@angular/core';
-import { Observable, of, delay, throwError } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { environment } from '../../../../environments/environment.development';
+
+export interface UserProfile {
+  id: number;
+  username: string;
+  email: string;
+  role?: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserProfile {
-  constructor() { }
-  getUserProfile(): Observable<any> {
-    console.warn('--- MODO SIMULACIÓN: getUserProfile ---');
-    const mockUser = {
-      username: 'usuario_simulado',
-      email: 'usuario@simulado.com'
-    };
-    return of(mockUser).pipe(delay(500));
+  private apiUrl = `${environment.apiUrl}/users`;
+  private http = inject(HttpClient);
+
+  getUserProfile(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(`${this.apiUrl}/profile`);
   }
 
-  updateUserProfile(profileData: { username: string; email: string }): Observable<any> {
-    console.warn('--- MODO SIMULACIÓN: updateUserProfile ---');
-    console.log('Datos a actualizar (simulado):', profileData);
-    return of({ success: true, user: profileData }).pipe(delay(1000));
+  updateUserProfile(data: { username: string; email: string }): Observable<UserProfile> {
+    return this.http.put<UserProfile>(`${this.apiUrl}/profile`, data);
   }
 
-  changePassword(passwordData: any): Observable<any> {
-    console.warn('--- MODO SIMULACIÓN: changePassword ---');
-    if (passwordData.currentPassword !== '123456') {
-      return throwError(() => new Error('La contraseña actual es incorrecta')).pipe(delay(1000));
-    }
-    console.log('Contraseña cambiada (simulado)');
-    return of({ success: true }).pipe(delay(1000));
+  changePassword(data: any): Observable<void> {
+    // POST a /api/users/password
+    return this.http.post<void>(`${this.apiUrl}/password`, data);
   }
 }

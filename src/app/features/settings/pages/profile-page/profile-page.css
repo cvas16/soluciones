@@ -76,7 +76,7 @@
 /* Etiquetas y campos */
 .form-label {
   font-weight: 500;
-  color: #ffffff;
+  color: #000000;
 }
 
 .form-control {
@@ -137,6 +137,7 @@
   align-items: center;
   gap: 0.5rem;
   transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  color: #000;
 }
 
 .btn.btn-primary:hover:not(:disabled) {
@@ -171,7 +172,7 @@
   }
   .section-title,
   .page-title {
-    color: #e5e7eb;
+    color: black;
   }
   .section-subtitle {
     color: #9ca3af;
